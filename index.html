@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sổ tay Design Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE work: a reference a DM opens every week, dense and ordered
+   IDEA a metro map of the project lifecycle: each project type is a line, each legal step a station
+   PICTURE the lifecycle line, recoloured and re-stationed by the chosen project type
+   COLOUR white / night #0e1116, ink, line colours green red amber blue + ink for hotels
+   TYPE Figtree 800 display + Figtree text
+   LAYOUT title band, metro line, decision questions, step list beside step detail, then laws, PCCC, operator, cases, tools, ask; phone stacks */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0e1116);--ink:light-dark(#141414,#eef0f3);--mute:light-dark(#5b5f66,#9aa1ab);--rule:light-dark(#e2e3e5,#272c34);--panel:light-dark(#f4f5f6,#161b22);--qh:#00a05a;--cc:#e6261f;--tt:#e0a000;--vp:#0a5cff;--ks:light-dark(#141414,#eef0f3);--line:var(--ks)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Figtree,system-ui,sans-serif;overflow-x:clip}
+a{color:inherit}
+.band{padding-block:clamp(24px,3.5vw,52px);padding-left:max(5vw,16px);padding-right:max(5vw,16px)}
+.alt{background:var(--panel)}
+.wrap{max-width:1240px;margin:0 auto}
+h1{font-weight:800;font-size:clamp(32px,4.4vw,50px);line-height:1.05;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2{font-weight:800;font-size:clamp(24px,2.6vw,32px);line-height:1.1;letter-spacing:-.015em;margin:0 0 8px;text-wrap:balance}
+h3{font-size:18px;margin:0 0 6px}
+p{margin:0 0 12px;max-width:72ch}
+.lead{color:var(--mute);font-size:17px;max-width:62ch;margin-top:12px}
+.top{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:24px;align-items:end;border-bottom:6px solid var(--line);padding-bottom:20px;transition:border-color .3s}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.facts div{border-left:1px solid var(--rule);padding-left:12px}
+.facts b{display:block;font-size:28px;font-weight:800;line-height:1.1}
+.facts span{font-size:13px;color:var(--mute)}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--rule)}
+nav .wrap{display:flex;gap:2px;overflow-x:auto;padding:0 max(5vw,16px)}
+nav a{flex:none;text-decoration:none;padding:14px 10px;font-weight:600;font-size:15px;border-bottom:3px solid transparent}
+nav a:hover,nav a:focus-visible{border-bottom-color:var(--line);outline:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
+.chip{font:600 15px Figtree,sans-serif;min-height:44px;padding:0 16px;border-radius:22px;border:2px solid var(--c);background:transparent;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.chip i{width:12px;height:12px;border-radius:50%;background:var(--c)}
+.chip[aria-pressed=true]{background:var(--c);color:#fff}
+.chip[aria-pressed=true] i{background:#fff}
+#ks-chip[aria-pressed=true]{color:var(--bg)}
+#ks-chip[aria-pressed=true] i{background:var(--bg)}
+.chip:focus-visible{outline:3px solid var(--c);outline-offset:2px}
+.fig{position:relative;height:240px;margin-top:8px}
+.fig>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+svg text{font-family:Figtree,sans-serif;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+.st{cursor:pointer}
+.st:focus-visible circle{stroke-width:6}
+.intro{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:24px}
+.note{font-size:14px;color:var(--mute)}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:16px}
+.alt .panel{background:var(--bg)}
+input[type=search],input[type=text],select,textarea{font:16px Figtree,sans-serif;color:var(--ink);background:var(--bg);border:1.5px solid var(--rule);border-radius:8px;padding:10px 12px;min-height:44px;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--line)}
+label{font-size:14px;font-weight:600;display:block;margin-bottom:4px}
+.btn{font:600 15px Figtree,sans-serif;min-height:44px;padding:0 18px;border-radius:8px;border:0;background:var(--ink);color:var(--bg);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--rule)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:focus-visible{outline:3px solid var(--line);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-size:13px;color:var(--mute);font-weight:600;padding:8px 10px;border-bottom:2px solid var(--ink)}
+td{padding:12px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:10px;border:1px solid currentColor;margin:0 4px 4px 0;white-space:nowrap}
+.tag.on{color:var(--qh)}.tag.chg{color:var(--cc)}.tag.std{color:var(--vp)}
+.q{border-top:1px solid var(--rule);padding:14px 0}
+.q legend{font-weight:600;padding:0;margin-bottom:8px}
+.q fieldset{border:0;margin:0;padding:0}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts label{display:inline-flex;align-items:center;gap:8px;font-weight:500;font-size:15px;border:1.5px solid var(--rule);border-radius:8px;padding:0 12px;min-height:44px;cursor:pointer;margin:0}
+.opts input{accent-color:var(--line);width:18px;height:18px}
+.opts label:has(input:checked){border-color:var(--line);background:color-mix(in srgb,var(--line) 10%,transparent)}
+.tree{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:28px;align-items:start}
+#tree-out li{margin-bottom:10px}
+#tree-out button{font:inherit;background:none;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer}
+.steps{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:24px;align-items:start}
+#slist{display:flex;flex-direction:column;border-left:6px solid var(--line);max-height:720px;overflow-y:auto}
+#slist button{font:500 15px Figtree,sans-serif;text-align:left;background:none;border:0;border-bottom:1px solid var(--rule);padding:10px 12px;min-height:44px;color:var(--ink);cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+#slist button b{flex:none;min-width:2.2em;font-weight:800}
+#slist button[aria-current=true]{background:color-mix(in srgb,var(--line) 12%,transparent);font-weight:700}
+#slist button.done span{text-decoration:line-through;color:var(--mute)}
+#slist .sub{padding-left:28px}
+#detail{position:sticky;top:64px}
+#detail h3{font-size:24px;font-weight:800;line-height:1.15;margin:4px 0 12px}
+.dgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px}
+.dgrid section h4{margin:0 0 4px;font-size:13px;color:var(--mute);font-weight:600}
+.dgrid section p,.dgrid ul{margin:0;font-size:15px}
+.dgrid .wide{grid-column:1/-1}
+.warn{padding:10px 12px;border-left:4px solid var(--line);background:color-mix(in srgb,var(--line) 8%,transparent);border-radius:0 8px 8px 0}
+.lawchip{font:600 13px Figtree,sans-serif;border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:14px;padding:4px 10px;margin:0 6px 6px 0;cursor:pointer;min-height:32px}
+.lawchip:hover,.lawchip:focus-visible{border-color:var(--line);outline:none}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));margin:18px 0}
+.flow div{border-top:6px solid var(--ks);padding:10px 10px 0 0;position:relative}
+.flow div::before{content:"";position:absolute;top:-12px;left:0;width:16px;height:16px;border-radius:50%;background:var(--bg);border:4px solid var(--ks)}
+.flow b{display:block;font-size:15px;margin-top:6px}
+.flow span{font-size:14px;color:var(--mute)}
+.src{font-size:13px;color:var(--mute)}
+ul{margin:0 0 12px;padding-left:20px}li{margin-bottom:6px}
+.tool b{display:block;font-size:17px}
+.tool p{font-size:15px;margin:4px 0 0}
+.ext{display:flex;flex-direction:column;gap:8px}
+.ext a.btn{align-self:flex-start;margin-top:auto}
+.cases{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:24px;align-items:start}
+.cform{display:grid;gap:12px}
+.cform .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.case{border-bottom:1px solid var(--rule);padding:14px 0}
+.case h4{margin:0 0 4px;font-size:17px}
+.case p{margin:4px 0;font-size:15px}
+.case .k{color:var(--mute);font-size:13px;font-weight:600}
+#chat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:24px}
+#log{min-height:220px;max-height:520px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.msg{padding:12px 14px;border-radius:10px;white-space:pre-wrap;font-size:15px}
+.msg.u{background:var(--ink);color:var(--bg);align-self:flex-end;max-width:85%}
+.msg.a{background:var(--bg);border:1px solid var(--rule)}
+.ask{display:flex;gap:8px;margin-top:12px}
+.ask textarea{min-height:48px;resize:vertical}
+.sugg{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.sugg button{font:14px Figtree,sans-serif;min-height:40px;padding:6px 12px;border-radius:8px;border:1px solid var(--rule);background:var(--bg);color:var(--ink);cursor:pointer;text-align:left}
+#lawdlg{position:fixed;inset:0;z-index:20;background:color-mix(in srgb,#000 45%,transparent);display:none;align-items:center;justify-content:center;padding:16px}
+#lawdlg.open{display:flex}
+#lawdlg .box{background:var(--bg);color:var(--ink);border-radius:12px;max-width:560px;width:100%;padding:20px;border-top:6px solid var(--line);max-height:85vh;overflow-y:auto}
+footer{border-top:1px solid var(--rule)}
+@media(max-width:900px){.top,.intro,#chat,.tree,.cases{grid-template-columns:minmax(0,1fr)}.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}.flow{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:24px}.steps{grid-template-columns:minmax(0,1fr)}#slist{max-height:320px}#detail{position:static}}
+@media(max-width:600px){.grid2,.grid3,.dgrid,.cform .two{grid-template-columns:minmax(0,1fr)}.flow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.facts b{font-size:22px}table{font-size:14px}th,td{padding:6px 4px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--rule)}.stack td{display:flex;gap:12px;border:0;padding:3px 0}.stack td::before{content:attr(data-l);color:var(--mute);font-size:13px;flex:none;width:6.5em}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div style="background:var(--ink);color:var(--bg);padding:10px max(5vw,16px);font-size:14px">Bản dự phòng chỉ để tra cứu, cập nhật ngày 24/11/2026. Hỏi Claude và thư viện tình huống ở <a href="https://claude.ai/artifact/S5vHq5V1rFkQx35fkJR7xT" style="color:inherit;font-weight:700">bản chính trên claude.ai</a>.</div>
+<header class="band"><div class="wrap">
+  <div class="top">
+    <div>
+      <h1>Sổ tay Design Manager</h1>
+      <p class="lead">Vòng đời pháp lý theo loại dự án, cây quyết định, trích yếu văn bản, PCCC, làm việc với operator, thư viện tình huống của riêng mày và Claude để hỏi ở bản chính.</p>
+    </div>
+    <div class="facts">
+      <div><b id="f-steps">0</b><span>bước, gồm bước riêng</span></div>
+      <div><b id="f-laws">0</b><span>văn bản có trích yếu</span></div>
+      <div><b>24/11/26</b><span>ngày rà soát</span></div>
+    </div>
+  </div>
+</div></header>
+<nav aria-label="Mục lục"><div class="wrap">
+  <a href="#vong-doi">Vòng đời</a><a href="#quyet-dinh">Cây quyết định</a><a href="#buoc">Từng bước</a><a href="#van-ban">Văn bản</a><a href="#pccc">PCCC</a><a href="#operator">Operator</a><a href="#tinh-huong">Tình huống</a><a href="#cong-cu">Công cụ</a><a href="#hoi">Hỏi Claude</a>
+</div></nav>
+
+<section class="band" id="vong-doi"><div class="wrap">
+  <h2>Chọn loại dự án để xem tuyến pháp lý</h2>
+  <div class="chips" id="chips" role="group" aria-label="Loại dự án"></div>
+  <div class="fig" id="fig"><svg id="metro" role="img" aria-label="Sơ đồ các bước pháp lý"></svg></div>
+  <div class="intro"><p id="type-intro"></p><p class="note">Bấm vào một ga để mở bước đó. Đây là khung chung cho dự án đầu tư kinh doanh, không thay cho việc phân tích pháp lý của từng dự án: trình tự thật còn tùy nguồn vốn, cấp công trình và phân cấp của địa phương.</p></div>
+</div></section>
+
+<section class="band alt" id="quyet-dinh"><div class="wrap">
+  <h2>Cây quyết định: dự án của mày đi tuyến nào?</h2>
+  <p>Trả lời 6 câu, trang sẽ chỉ ra các nhánh pháp lý phải đi và bước cần mở ra xem.</p>
+  <div class="tree">
+    <form id="tree" onsubmit="return false"></form>
+    <div class="panel" style="position:sticky;top:64px"><h3>Kết quả</h3><ul id="tree-out"></ul></div>
+  </div>
+</div></section>
+
+<section class="band" id="buoc"><div class="wrap">
+  <div class="row" style="justify-content:space-between;margin-bottom:14px">
+    <h2 id="ck-title" style="margin:0">Từng bước</h2>
+    <div class="row" style="width:min(560px,100%)"><input type="search" id="q" placeholder="Tìm trong mọi loại dự án: PCCC, GPXD, bảo lãnh…" aria-label="Tìm bước" style="flex:1;width:auto"><button class="btn ghost" id="reset" type="button">Bỏ đánh dấu</button></div>
+  </div>
+  <div class="steps">
+    <div id="slist" role="list"></div>
+    <article id="detail" class="panel" aria-live="polite"></article>
+  </div>
+  <p class="note" style="margin-top:10px">Danh mục hồ sơ là để tham khảo: đối chiếu thành phần hồ sơ theo mẫu của nghị định và cơ quan tiếp nhận. Đánh dấu "đã xong" chỉ lưu trên trình duyệt này.</p>
+</div></section>
+
+<section class="band alt" id="van-ban"><div class="wrap">
+  <h2>Tra nhanh văn bản, rà soát ngày 24/11/2026</h2>
+  <p>Ba thay đổi lớn năm 2026: Luật Xây dựng 2025 bỏ thẩm định thiết kế triển khai sau thiết kế cơ sở tại cơ quan nhà nước, mở rộng diện miễn giấy phép xây dựng, và Nghị định 217/2026 thay Nghị định 175/2024. Mục đỏ là luật đang sửa, xem lại trước khi dùng.</p>
+  <div class="row" style="margin:12px 0"><input type="search" id="lq" placeholder="Tìm văn bản: quy hoạch, nhà ở, PCCC…" aria-label="Tìm văn bản" style="max-width:420px"></div>
+  <div class="scroll"><table class="stack" id="laws"><thead><tr><th style="width:28%">Văn bản</th><th style="width:12%">Hiệu lực</th><th>Trích yếu</th><th style="width:16%">Tình trạng</th></tr></thead><tbody></tbody></table></div>
+</div></section>
+
+<section class="band" id="pccc"><div class="wrap">
+  <h2>PCCC: chốt nhóm nguy hiểm cháy trước tiên</h2>
+  <p>Nhóm nguy hiểm cháy theo công năng (F1–F5) trong QCVN 06:2022/BXD kéo theo bậc chịu lửa, khoang cháy, lối thoát nạn và hệ thống chữa cháy. Chốt sai nhóm ở concept là sai dây chuyền tới BCNCKT.</p>
+  <div class="grid2">
+    <div class="scroll"><table class="stack" id="fgroups"><thead><tr><th>Loại công trình</th><th>Nhóm</th><th>Chốt sớm</th></tr></thead><tbody></tbody></table>
+      <p class="note" style="margin-top:8px">Đã đối chiếu Bảng 6 QCVN 06:2022/BXD (bản hợp nhất kèm Sửa đổi 1:2023). Công trình hỗn hợp: mỗi phần công năng xét theo nhóm của nó.</p></div>
+    <div class="panel">
+      <h3>Bộ văn bản PCCC dùng khi thiết kế</h3>
+      <ul>
+        <li>QCVN 06:2022/BXD kèm Sửa đổi 1:2023 (Thông tư 06/2022 và 09/2023 của Bộ Xây dựng): an toàn cháy cho nhà và công trình.</li>
+        <li>QCVN 10:2025/BCA: trang bị, bố trí phương tiện PCCC và cứu nạn, cứu hộ.</li>
+        <li>TCVN 7336:2021: hệ thống chữa cháy tự động bằng nước (sprinkler).</li>
+        <li>Luật PCCC và CNCH 55/2024/QH15, Nghị định 105/2025/NĐ-CP: thẩm định thiết kế, nghiệm thu, bảo hiểm cháy nổ.</li>
+      </ul>
+      <p>Tra yêu cầu theo thông số công trình (chiều cao PCCC, số tầng, khoang cháy, số người): dùng công cụ tra QCVN 06 ở mục Công cụ bên dưới.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="band alt" id="operator"><div class="wrap">
+  <h2>Làm việc với operator: vòng duyệt thiết kế của IHG</h2>
+  <p>Khi chủ đầu tư ký với tập đoàn quản lý khách sạn, ngoài cơ quan nhà nước còn có một "cơ quan duyệt" thứ hai là operator. Dưới đây tách rõ điều đã kiểm chứng từ nguồn IHG và điều là thông lệ ngành.</p>
+  <div class="flow" id="flow"></div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Đã kiểm chứng từ nguồn IHG</h3>
+      <ul>
+        <li>IHG có đội Design &amp; Engineering hỗ trợ chủ đầu tư thiết kế khách sạn hợp thị trường và trải nghiệm thương hiệu.</li>
+        <li>Đội Plan Review duyệt hoặc không duyệt bản vẽ, design board, life safety plan và các hồ sơ nộp khác, đối chiếu Brand Vision, Design Guidelines, Brand Standards và Brand Safety Standards.</li>
+        <li>Theo mô tả công việc khu vực IMEA, đội thiết kế hỗ trợ chủ đầu tư theo Technical Services Agreement (TSA) suốt vòng đời dự án: khởi đầu, chọn tư vấn, concept, thiết kế cơ sở và chi tiết, hồ sơ mời thầu, kiểm tra công trường định kỳ, kiểm tra trước khai trương.</li>
+      </ul>
+      <p class="src">Nguồn: development.ihg.com, tin tuyển dụng của IHG (Manager Design Review, Manager Design IMEA).</p>
+    </div>
+    <div class="panel">
+      <h3>Thông lệ ngành (đối chiếu hợp đồng thật)</h3>
+      <ul>
+        <li>Thường có hai hợp đồng: HMA (quản lý vận hành) và TSA (dịch vụ kỹ thuật thời kỳ thiết kế, thi công, chuẩn bị khai trương).</li>
+        <li>TSA có thể kèm danh sách tư vấn được operator chấp thuận trước, hoặc tiêu chí tối thiểu cho tư vấn.</li>
+        <li>Hồ sơ nộp operator thường dựa trên Design Guide, Facilities List và Space Allocation: mặt bằng, mặt đứng, phòng điển hình tỉ lệ lớn, chỉ dẫn vật liệu.</li>
+        <li>Operator thường có quyền duyệt hệ thống kỹ thuật chính (HVAC, an toàn sinh mạng) và nội thất. Thời gian duyệt mỗi vòng nên ghi rõ trong TSA.</li>
+      </ul>
+      <p class="src">Nguồn: Holland &amp; Knight, bài về TSA khách sạn; điều khoản TSA mẫu trên Law Insider.</p>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:20px">
+    <div>
+      <h3>DM phía chủ đầu tư cần làm gì</h3>
+      <ul>
+        <li><b>Chốt phiên bản brand standard</b> áp dụng cho dự án, ghi vào biên bản.</li>
+        <li><b>Đưa vòng duyệt operator vào tiến độ</b> ở mọi cổng: Concept, SD, DD, CD, mock-up room, FF&amp;E, kiểm tra trước khai trương.</li>
+        <li><b>Lập sổ sai khác (deviation/waiver register)</b>: lệch standard ở đâu, ai chấp thuận, ngày nào.</li>
+        <li><b>Đối chiếu QCVN với brand standard</b>: khác nhau thì lấy yêu cầu chặt hơn và ghi lý do. Pháp luật Việt Nam là điều kiện bắt buộc để qua thẩm định.</li>
+        <li><b>Tách ngân sách FF&amp;E và OS&amp;E</b> sớm.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Câu hỏi khi phỏng vấn chủ đầu tư khách sạn</h3>
+      <ul>
+        <li>TSA với operator đã ký chưa, áp dụng phiên bản brand standard nào?</li>
+        <li>Đầu mối technical services của operator cho dự án là ai?</li>
+        <li>Tư vấn thiết kế đã được operator chấp thuận chưa?</li>
+        <li>Ai duyệt thiết kế cuối cùng phía chủ đầu tư?</li>
+        <li>Dự án đang ở cổng nào, vướng gì ở vòng duyệt gần nhất?</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section class="band" id="tinh-huong"><div class="wrap"><h2>Thư viện tình huống</h2><p>Tình huống là ghi chép riêng của mày nên chỉ nằm ở bản chính trên claude.ai, không đưa lên bản công khai này.</p><a class="btn" href="https://claude.ai/artifact/S5vHq5V1rFkQx35fkJR7xT">Mở bản chính trên claude.ai</a></div></section>
+
+<section class="band alt" id="cong-cu"><div class="wrap">
+  <h2>Công cụ</h2>
+  <div class="grid3" id="ext"></div>
+  <h3 style="margin-top:28px">Bộ 5 công cụ quản lý thiết kế (bảng tính DM Toolkit)</h3>
+  <div class="grid3" id="tools" style="margin-top:12px"></div>
+</div></section>
+
+<section class="band" id="hoi"><div class="wrap"><h2>Hỏi Claude</h2><p>Khung hỏi Claude chỉ chạy trên bản chính, vì nó dùng Claude có sẵn của claude.ai. Bản này là bản dự phòng để tra cứu.</p><a class="btn" href="https://claude.ai/artifact/S5vHq5V1rFkQx35fkJR7xT">Mở bản chính trên claude.ai</a></div></section>
+
+<footer class="band"><div class="wrap">
+  <p class="note">Tài liệu tham khảo cá nhân, không thay thế tư vấn pháp lý và không dùng làm căn cứ thẩm định. Luôn đối chiếu văn bản gốc, văn bản hợp nhất mới nhất và hướng dẫn của địa phương.</p>
+  <p class="src">Nguồn chính: thuvienphapluat.vn, luatvietnam.vn, hoatieu.vn, moc.gov.vn, datafiles.chinhphu.vn, vcci.com.vn, lsvn.vn, hatinh.gov.vn, development.ihg.com, careers.ihg.com, hklaw.com. Cách tổ chức tham khảo từ Cẩm nang PPP và công cụ tra QCVN 06 của Võ Đỗ Hùng.</p>
+</div></footer>
+
+<div id="lawdlg" role="dialog" aria-modal="true" aria-labelledby="ld-t"><div class="box"><p class="note" id="ld-eff"></p><h3 id="ld-t" style="font-size:22px"></h3><p id="ld-sum"></p><p class="note" id="ld-st"></p><div class="row"><a class="btn" id="ld-link" href="#">Mở văn bản</a><button class="btn ghost" type="button" id="ld-close">Đóng</button></div></div></div>
+
+<script>
+{
+const LAW={
+ dt:{n:'Luật Đầu tư 143/2025/QH15',e:'01/03/2026',s:'on',sum:'Quy định chấp thuận chủ trương đầu tư (mục tiêu, địa điểm, quy mô, tiến độ, thời hạn, nhà đầu tư) và cấp giấy chứng nhận đăng ký đầu tư. Dự án nhà ở, khu đô thị triển khai theo Luật Xây dựng, Nhà ở, Kinh doanh bất động sản sau khi được chấp thuận chủ trương. Một số điều có hiệu lực 01/01/2026 và 01/07/2026.',u:'https://thuvienphapluat.vn/van-ban/Dau-tu/Luat-Dau-tu-2025-so-143-2025-QH15-681550.aspx'},
+ qh:{n:'Luật Quy hoạch đô thị và nông thôn 47/2024/QH15',e:'01/07/2025',s:'on',sum:'Hệ thống quy hoạch chung, phân khu, chi tiết; trình tự lập, thẩm định, phê duyệt, điều chỉnh. Thay cho Luật Quy hoạch đô thị 2009 và phần quy hoạch xây dựng của Luật Xây dựng.',u:''},
+ nd178:{n:'NĐ 178/2025/NĐ-CP, sửa bởi NĐ 34/2026/NĐ-CP',e:'01/07/2025',s:'on',sum:'Chi tiết Luật Quy hoạch đô thị và nông thôn: trường hợp lập quy hoạch chi tiết, quy trình rút gọn "quy hoạch tổng mặt bằng" (không lập nhiệm vụ), thời gian lập, chi phí. Bộ Xây dựng đã có văn bản hợp nhất 18/VBHN-BXD (03/2026).',u:'https://moc.gov.vn/Images/FileVanBan/BXD_18-VBHN-BXD_24032026.pdf'},
+ tt16:{n:'TT 16/2025/TT-BXD, sửa bởi TT 43/2025 và TT 24/2026',e:'01/07/2025',s:'on',sum:'Chi tiết hồ sơ, nội dung nhiệm vụ và đồ án quy hoạch đô thị và nông thôn. Có văn bản hợp nhất 59/VBHN-BXD.',u:'https://datafiles.chinhphu.vn/cpp/files/vbpq/2026/7/59-vbhn-bxd.signed.pdf'},
+ qc01:{n:'QCVN 01:2021/BXD',e:'—',s:'std',sum:'Quy chuẩn quốc gia về quy hoạch xây dựng: chỉ tiêu sử dụng đất, mật độ, khoảng lùi, giao thông, hạ tầng kỹ thuật, kể cả yêu cầu đường cho xe chữa cháy.',u:''},
+ dd:{n:'Luật Đất đai 31/2024/QH15',e:'01/08/2024',s:'on',sum:'Giao đất, cho thuê đất, chuyển mục đích, giá đất, thu hồi, bồi thường, hỗ trợ, tái định cư.',u:''},
+ bvmt:{n:'Luật BVMT 72/2020/QH14, sửa bởi Luật 146/2025/QH15',e:'—',s:'chg',sum:'Đối tượng phải đánh giá tác động môi trường, cấp giấy phép môi trường, đăng ký môi trường. Theo Luật 146/2025, chủ dự án tự tổ chức thực hiện ĐTM từ 01/01/2026. Quốc hội đang thảo luận dự án luật sửa đổi tiếp tại kỳ họp tháng 10–11/2026.',u:'https://luatvietnam.vn/linh-vuc-khac/tong-hop-diem-moi-cua-luat-sua-doi-luat-bao-ve-moi-truong-883-106073-article.html'},
+ xd:{n:'Luật Xây dựng 135/2025/QH15',e:'01/07/2026',s:'on',sum:'Báo cáo nghiên cứu khả thi gồm thuyết minh và thiết kế (Điều 24); thẩm định BCNCKT, cả giải pháp PCCC (Điều 26, 27); bỏ thẩm định thiết kế triển khai sau thiết kế cơ sở tại cơ quan chuyên môn; Điều 43 mở rộng miễn GPXD, trong đó có công trình thuộc dự án đã được cơ quan chuyên môn thẩm định BCNCKT và phê duyệt, nhưng phải gửi thông báo khởi công (Điều 44). Khoản 2, 3 Điều 43 và Điều 71 có hiệu lực từ 01/01/2026.',u:'https://thuviennhadat.vn/van-ban-phap-luat-viet-nam/luat-xay-dung-2025-so-135-2025-qh15-675213.html'},
+ nd217:{n:'NĐ 217/2026/NĐ-CP',e:'01/07/2026',s:'on',sum:'Chi tiết Luật Xây dựng về quản lý hoạt động xây dựng, thay NĐ 175/2024: thẩm quyền, hồ sơ, thời gian thẩm định BCNCKT; thiết kế triển khai sau khi dự án được duyệt; điều kiện cấp GPXD; bắt buộc BIM với công trình mới từ cấp II trở lên từ giai đoạn BCNCKT. Đã có văn bản hợp nhất 91/VBHN-BXD (09/2026), đọc bản hợp nhất.',u:'https://datafiles.chinhphu.vn/cpp/files/vbpq/2026/9/91-vbhn-bxd.signed.pdf'},
+ nd339:{n:'NĐ 339/2026/NĐ-CP',e:'26/08/2026',s:'on',sum:'Xử phạt vi phạm hành chính trong xây dựng, hạ tầng kỹ thuật, nhà ở, kinh doanh bất động sản. Thay NĐ 16/2022/NĐ-CP.',u:''},
+ pccc:{n:'Luật PCCC và CNCH 55/2024/QH15',e:'01/07/2025',s:'on',sum:'Yêu cầu PCCC khi lập, điều chỉnh, phê duyệt quy hoạch đô thị và nông thôn (khoản 5 Điều 15); thẩm định thiết kế và nghiệm thu về PCCC, phần lớn do cơ quan chuyên môn về xây dựng thực hiện cùng thẩm định dự án (Điều 16, 17).',u:''},
+ nd105:{n:'NĐ 105/2025/NĐ-CP',e:'01/07/2025',s:'on',sum:'Chi tiết Luật PCCC và CNCH: danh mục cơ sở, công trình phải thẩm định thiết kế về PCCC (Phụ lục III), trình tự thẩm định, kiểm tra nghiệm thu, mẫu biểu PC13, PC16. Hướng dẫn của địa phương: xem link.',u:'https://hatinh.gov.vn/vi/bai-viet/huong-dan-tham-dinh-thiet-ke-nghiem-thu-ve-pccc-doi-voi-cong-trinh-xay-dung'},
+ no:{n:'Luật Nhà ở 27/2023/QH15',e:'01/08/2024',s:'chg',sum:'Nhà ở thương mại, nhà ở xã hội, nhà chung cư. Khoản 2 Điều 83: dự án nhà ở thương mại, khu đô thị bố trí 20% quỹ đất NOXH, hoặc chuyển giao quỹ nhà, hoặc nộp tiền tương đương, do UBND cấp tỉnh quyết định. Có dự thảo Luật Nhà ở sửa đổi (07/2026).',u:'https://luatvietnam.vn/dat-dai/luat-nha-o-2023-so-27-2023-qh15-284800-d1.html'},
+ nd100:{n:'NĐ 100/2024/NĐ-CP (sửa bởi NĐ 261/2025, 54/2026, 136/2026)',e:'01/08/2024',s:'on',sum:'Chi tiết Luật Nhà ở về phát triển và quản lý nhà ở xã hội, gồm cách thực hiện nghĩa vụ 20% quỹ đất.',u:''},
+ kd:{n:'Luật Kinh doanh bất động sản 29/2023/QH15',e:'01/08/2024',s:'on',sum:'Điều 23: nguyên tắc kinh doanh nhà hình thành trong tương lai, đặt cọc tối đa 5% giá bán. Điều 24: điều kiện đưa vào kinh doanh (giấy tờ đất, nghiệm thu móng, văn bản đủ điều kiện bán). Điều 26: bảo lãnh. Điều 31: điều kiện phân lô bán nền.',u:'https://thuvienphapluat.vn/van-ban/Bat-dong-san/Luat-Kinh-doanh-bat-dong-san-29-2023-QH15-530116.aspx'},
+ kt:{n:'Luật Kiến trúc 40/2019/QH14',e:'01/07/2020',s:'on',sum:'Quy chế quản lý kiến trúc của địa phương, yêu cầu kiến trúc với công trình, chứng chỉ hành nghề kiến trúc.',u:''},
+ dl:{n:'Luật Du lịch 09/2017/QH14',e:'01/01/2018',s:'chg',sum:'Cơ sở lưu trú du lịch; tự nguyện đăng ký xếp hạng 1–5 sao theo tiêu chuẩn quốc gia. Quốc hội thảo luận dự thảo Luật Du lịch sửa đổi tháng 11/2026.',u:'https://thuvienphapluat.vn/van-ban/Van-hoa-Xa-hoi/Luat-du-lich-2017-322936.aspx'},
+ tcvn4391:{n:'TCVN 4391:2015 Khách sạn – Xếp hạng',e:'—',s:'std',sum:'Xếp hạng 1–5 sao theo vị trí, kiến trúc, trang thiết bị, dịch vụ, nhân sự, an ninh, môi trường. Dùng được làm checklist thiết kế: ví dụ sảnh đón tiếp tối thiểu 35 m² (3 sao), 60 m² (4 sao), 100 m² (5 sao) với khách sạn thông thường.',u:'https://thuvienphapluat.vn/TCVN/Linh-vuc-khac/TCVN-4391-2015-Khach-san-Xep-hang-915306.aspx'},
+ qc06:{n:'QCVN 06:2022/BXD + Sửa đổi 1:2023',e:'—',s:'std',sum:'An toàn cháy cho nhà và công trình: nhóm nguy hiểm cháy theo công năng F1–F5, bậc chịu lửa, khoang cháy, thoát nạn, ngăn cháy lan, cấp nước chữa cháy.',u:'https://hvdo42.github.io/qcvn06-tra-cuu/'},
+ qc04:{n:'QCVN 04:2021/BXD',e:'—',s:'std',sum:'Quy chuẩn quốc gia về nhà chung cư: diện tích căn hộ, chiều cao, không gian sinh hoạt cộng đồng, chỗ để xe, an toàn sử dụng.',u:''},
+ qc10:{n:'QCVN 10:2025/BCA',e:'—',s:'std',sum:'Trang bị, bố trí phương tiện PCCC và cứu nạn, cứu hộ cho nhà và công trình.',u:''}
+};
+const STEPS=[
+ {id:'s1',st:'Chủ trương',name:'Chấp thuận chủ trương đầu tư',viec:'Lập đề xuất dự án; được chấp thuận chủ trương đầu tư và nhà đầu tư (hoặc qua đấu giá, đấu thầu).',hs:['Văn bản đề nghị thực hiện dự án','Đề xuất dự án: mục tiêu, quy mô, vốn, tiến độ, nhu cầu sử dụng đất','Tài liệu năng lực tài chính của nhà đầu tư'],laws:['dt'],risk:'Quy mô, công năng ghi trong chủ trương lệch với ý tưởng thiết kế về sau, phải xin điều chỉnh chủ trương.',chu:'Mục tiêu, quy mô, tiến độ trong chủ trương là khung cứng. Đọc kỹ trước khi giao nhiệm vụ cho tư vấn.'},
+ {id:'s2',st:'Quy hoạch',name:'Quy hoạch chi tiết 1/500',viec:'Lập nhiệm vụ và đồ án quy hoạch chi tiết; lô đủ điều kiện thì lập quy hoạch tổng mặt bằng theo quy trình rút gọn, không lập nhiệm vụ.',hs:['Khảo sát địa hình, hiện trạng','Nhiệm vụ quy hoạch (nếu phải lập)','Thuyết minh, bản vẽ đồ án, dự thảo quy định quản lý','Ý kiến cộng đồng dân cư và cơ quan liên quan'],laws:['qh','nd178','tt16','qc01','pccc'],risk:'Chỉ tiêu quy hoạch không đủ cho bài toán kinh doanh; điều chỉnh 1/500 về sau mất nhiều tháng.',chu:'Chỉ tiêu mật độ, tầng cao, hệ số sử dụng đất, dân số quyết định quy mô sản phẩm. Đồ án phải có giải pháp PCCC: đường và bãi cho xe chữa cháy, nguồn nước, trụ nước.'},
+ {id:'s3',st:'Đất đai',name:'Giao, thuê đất và giải phóng mặt bằng',viec:'Giao đất, cho thuê đất hoặc chuyển mục đích; xác định giá đất, nộp tiền; bồi thường, giải phóng mặt bằng.',hs:['Hồ sơ đo đạc, trích lục bản đồ địa chính','Phương án bồi thường, hỗ trợ, tái định cư','Quyết định giao đất hoặc cho thuê đất'],laws:['dd'],risk:'Đền bù kéo dài; ranh giới thực tế khác hồ sơ quy hoạch.',chu:'Ranh, mốc giới và hiện trạng phải khớp khảo sát. Tiến độ đền bù thường là đường găng thật của dự án.'},
+ {id:'s4',st:'Môi trường',name:'Đánh giá tác động môi trường',viec:'ĐTM, giấy phép môi trường hoặc đăng ký môi trường, tùy loại và quy mô dự án.',hs:['Báo cáo ĐTM hoặc hồ sơ đề nghị cấp giấy phép môi trường','Tham vấn cộng đồng (nếu thuộc diện)'],laws:['bvmt'],risk:'Luật đang sửa đổi: đối tượng phải làm ĐTM có thể thay đổi trong lúc dự án đang chạy.',chu:'Kiểm tra lại đối tượng phải làm ĐTM trước khi lập hồ sơ. Giải pháp xử lý nước thải ảnh hưởng mặt bằng hạ tầng.'},
+ {id:'s5',st:'BCNCKT',name:'Báo cáo nghiên cứu khả thi và thẩm định',viec:'Khảo sát; lập BCNCKT gồm thuyết minh và thiết kế (cơ sở, FEED hoặc kỹ thuật); trình cơ quan chuyên môn về xây dựng thẩm định; phê duyệt dự án.',hs:['Tờ trình thẩm định','BCNCKT: thuyết minh và thiết kế','Báo cáo khảo sát địa chất, địa hình','Hồ sơ giải pháp PCCC','Báo cáo thẩm tra (công trình phải thẩm tra)','Mô hình BIM (công trình mới từ cấp II)'],laws:['xd','nd217','pccc','nd105','qc06'],risk:'Bị yêu cầu bổ sung PCCC; thiết kế chưa qua vòng duyệt nội bộ hoặc của operator mà đã nộp, phải sửa sau thẩm định.',chu:'Đây là cổng pháp lý thiết kế lớn nhất: thẩm định gồm cả PCCC. Công trình mới từ cấp II trở lên phải áp dụng BIM từ giai đoạn này. Công trình lớn, ảnh hưởng an toàn cộng đồng phải thẩm tra thiết kế.'},
+ {id:'s6',st:'TK triển khai',name:'Thiết kế triển khai sau khi dự án được duyệt',viec:'Thiết kế kỹ thuật, bản vẽ thi công, dự toán; chủ đầu tư tự thẩm định, phê duyệt.',hs:['Hồ sơ TKKT hoặc BVTC theo bộ môn','Dự toán','Báo cáo thẩm tra độc lập (nếu thuê)','Biên bản review nội bộ, sổ comment'],laws:['xd','nd217'],risk:'Thiết kế triển khai lệch hồ sơ đã thẩm định, nhất là PCCC; sai sót không còn cơ quan nhà nước rà giúp.',chu:'Luật mới bỏ thẩm định thiết kế triển khai sau thiết kế cơ sở tại cơ quan chuyên môn. Trách nhiệm chất lượng dồn về chủ đầu tư, nên review nội bộ và thẩm tra độc lập quan trọng hơn trước.'},
+ {id:'s7',st:'Khởi công',name:'Giấy phép xây dựng hoặc thông báo khởi công',viec:'Xin GPXD; hoặc nếu thuộc diện miễn phép thì gửi thông báo khởi công kèm hồ sơ tương ứng.',hs:['Đơn đề nghị cấp GPXD, hoặc thông báo khởi công','Giấy tờ hợp pháp về đất','Bản vẽ thiết kế theo yêu cầu cấp phép','Quyết định phê duyệt dự án, kết quả thẩm định BCNCKT'],laws:['xd','nd217','nd339'],risk:'Khởi công khi chưa gửi thông báo hoặc chưa đủ điều kiện, bị xử phạt và đình chỉ.',chu:'Công trình thuộc dự án đã được cơ quan chuyên môn thẩm định BCNCKT và phê duyệt thì được miễn GPXD, nhưng vẫn phải thông báo khởi công.'},
+ {id:'s8',st:'Nghiệm thu',name:'Thi công, nghiệm thu PCCC và hoàn thành',viec:'Quản lý thiết kế trong thi công (RFI, shop drawing, thay đổi); kiểm tra công tác nghiệm thu PCCC; nghiệm thu hoàn thành, hồ sơ hoàn công.',hs:['Sổ RFI, sổ thay đổi thiết kế','Shop drawing đã duyệt','Hồ sơ nghiệm thu PCCC','Bản vẽ hoàn công, biên bản nghiệm thu hoàn thành'],laws:['xd','nd217','nd105'],risk:'Thay đổi trong thi công làm mất hiệu lực giải pháp PCCC đã thẩm định; hoàn công thiếu, chậm đưa vào sử dụng.',chu:'Thay đổi thiết kế trong thi công phải giữ ý đồ thiết kế và hồ sơ PCCC đã thẩm định. Lập sổ thay đổi ngay từ ngày khởi công.'},
+ {id:'s9',st:'Vận hành',name:'Đưa vào kinh doanh, vận hành',viec:'Thủ tục kinh doanh theo loại sản phẩm: bán, cho thuê, vận hành dịch vụ.',hs:['Theo loại dự án, xem các bước riêng'],laws:[],risk:'Thiếu điều kiện kinh doanh riêng của từng loại sản phẩm.',chu:'Mỗi loại dự án có điều kiện riêng, xem các bước riêng của loại đó.'}
+];
+const TYPES={
+ qh:{name:'Quy hoạch, khu đô thị',c:'var(--qh)',f:'Theo từng công trình trong khu',intro:'Khu đô thị là loại dài hơi nhất: quy hoạch và hạ tầng kỹ thuật đi trước, sản phẩm (thấp tầng, chung cư, thương mại) đi sau theo từng giai đoạn.',
+  notes:{s2:'Với khu đô thị, đồ án 1/500 là "hợp đồng" giữa chủ đầu tư và nhà nước: mọi điều chỉnh về sau đều phải xin lại. Chốt kỹ cao độ san nền, thoát nước, đấu nối hạ tầng.',s9:'Bàn giao hạ tầng kỹ thuật cho địa phương theo cam kết trong dự án.'},
+  extra:[{after:'s3',name:'Nghĩa vụ nhà ở xã hội',viec:'Bố trí 20% quỹ đất làm NOXH, hoặc chuyển giao quỹ nhà, hoặc nộp tiền tương đương, theo quyết định của UBND tỉnh.',hs:['Văn bản của UBND tỉnh về hình thức thực hiện'],laws:['no','nd100'],risk:'Hình thức thực hiện chốt muộn, phải vẽ lại cơ cấu lô đất.',chu:'Hình thức thực hiện ảnh hưởng thẳng tới quy hoạch lô đất. Hỏi sớm địa phương chọn hình thức nào.'},
+   {after:'s9',name:'Phân lô bán nền',viec:'Chỉ được chuyển nhượng quyền sử dụng đất đã có hạ tầng cho cá nhân tự xây ở khu vực pháp luật cho phép.',hs:['Hồ sơ hạ tầng đã nghiệm thu','Văn bản xác nhận khu vực được phép'],laws:['kd'],risk:'Cơ cấu sản phẩm dựa trên phân lô bán nền ở khu vực không được phép.',chu:'Kiểm tra khu vực dự án có thuộc diện được phân lô bán nền không trước khi chốt cơ cấu sản phẩm.'}]},
+ cc:{name:'Chung cư',c:'var(--cc)',f:'F1.3',intro:'Chung cư thương mại bị kiểm soát chặt nhất ở khâu bán hàng: điều kiện mở bán nhà hình thành trong tương lai quyết định dòng tiền của cả dự án.',
+  notes:{s5:'Thẩm định áp dụng QCVN 04:2021/BXD (nhà chung cư) và QCVN 06:2022/BXD kèm Sửa đổi 1:2023. Chung cư thuộc nhóm nguy hiểm cháy F1.3.',s8:'Mốc nghiệm thu phần móng là điều kiện mở bán, nên đặt làm mốc chính trên tiến độ.'},
+  extra:[{after:'s3',name:'Nghĩa vụ nhà ở xã hội',viec:'Bố trí 20% quỹ đất NOXH, hoặc chuyển giao quỹ nhà, hoặc nộp tiền tương đương.',hs:['Văn bản của UBND tỉnh về hình thức thực hiện'],laws:['no','nd100'],risk:'Luật Nhà ở đang có dự thảo sửa đổi.',chu:'Theo dõi dự thảo Luật Nhà ở sửa đổi trước khi chốt phương án.'},
+   {after:'s8',name:'Điều kiện bán nhà hình thành trong tương lai',viec:'Có giấy tờ đất, hồ sơ dự án; nghiệm thu xong phần móng; có văn bản của cơ quan quản lý nhà ở cấp tỉnh xác nhận đủ điều kiện bán; ngân hàng bảo lãnh nghĩa vụ tài chính.',hs:['Biên bản nghiệm thu phần móng','Văn bản đủ điều kiện bán','Hợp đồng bảo lãnh ngân hàng','Hợp đồng mua bán mẫu'],laws:['kd'],risk:'Sales mở bán trước khi đủ điều kiện; móng trễ làm trễ cả dòng tiền.',chu:'Đặt cọc tối đa 5% giá bán, và chỉ khi nhà đã đủ điều kiện đưa vào kinh doanh. Sales sẽ hỏi DM về mốc móng.'},
+   {after:'s9',name:'Bàn giao và quản lý vận hành',viec:'Bàn giao căn hộ; quỹ bảo trì phần sở hữu chung; hội nghị nhà chung cư, đơn vị quản lý vận hành.',hs:['Hồ sơ bàn giao căn hộ','Quy chế quản lý sử dụng nhà chung cư'],laws:['no','qc04'],risk:'Cư dân khiếu nại phần sở hữu chung, chỗ để xe, khu sinh hoạt cộng đồng.',chu:'Thiết kế phòng kỹ thuật, kho, khu sinh hoạt cộng đồng ngay từ đầu.'}]},
+ tt:{name:'Nhà ở thấp tầng',c:'var(--tt)',f:'F1.4',intro:'Nhà phố, biệt thự trong dự án: đồ án 1/500 khóa mẫu nhà, nên thiết kế mẫu nhà và quy chế kiến trúc là việc của DM ngay từ đầu.',
+  notes:{s2:'Đồ án 1/500 thường quy định mẫu nhà, chỉ giới, tầng cao từng lô. Thiết kế mẫu nhà phải khớp từng chỉ tiêu.',s7:'Nhà trong dự án đã được cơ quan chuyên môn thẩm định BCNCKT thì thuộc diện miễn GPXD, chỉ cần thông báo khởi công.'},
+  extra:[{after:'s2',name:'Quy chế quản lý kiến trúc',viec:'Đối chiếu quy chế quản lý kiến trúc của địa phương: mặt đứng, màu sắc, vật liệu, chiều cao tầng.',hs:['Quy chế quản lý kiến trúc khu vực','Thiết kế mẫu nhà'],laws:['kt'],risk:'Khách mua tự sửa mặt tiền, phá vỡ tổng thể.',chu:'Đưa quy định kiến trúc vào hợp đồng mua bán.'},
+   {after:'s8',name:'Điều kiện bán nhà hình thành trong tương lai',viec:'Giống chung cư: giấy tờ đất, nghiệm thu móng, văn bản đủ điều kiện bán, bảo lãnh ngân hàng.',hs:['Biên bản nghiệm thu móng theo căn hoặc dãy','Văn bản đủ điều kiện bán'],laws:['kd'],risk:'Cách tính mốc móng theo căn hay theo dãy hiểu khác nhau.',chu:'Kiểm tra cách tính với cơ quan quản lý nhà ở.'},
+   {after:'s9',name:'Phân lô bán nền (nếu có)',viec:'Chỉ ở khu vực pháp luật cho phép chuyển nhượng quyền sử dụng đất để người mua tự xây.',hs:['Văn bản xác nhận khu vực được phép'],laws:['kd'],risk:'Không được phân lô bán nền thì phải xây thô hoặc hoàn thiện mặt ngoài trước khi bán.',chu:'Chốt sớm phương án bán: nền, thô hay hoàn thiện.'}]},
+ vp:{name:'Văn phòng',c:'var(--vp)',f:'F4.3',intro:'Văn phòng là dự án thương mại dịch vụ: không có nghĩa vụ nhà ở xã hội, nhưng tiêu chuẩn kỹ thuật, năng lượng và PCCC cho khối cao tầng là trọng tâm.',
+  notes:{s5:'Văn phòng thuộc nhóm nguy hiểm cháy F4.3 theo QCVN 06:2022/BXD. Kiểm tra quy chuẩn công trình sử dụng năng lượng hiệu quả (QCVN 09, phiên bản hiện hành).',s9:'Kinh doanh cho thuê sàn văn phòng theo Luật Kinh doanh bất động sản 2023.'},
+  extra:[{after:'s6',name:'Hạng văn phòng và chứng chỉ xanh (tự nguyện)',viec:'Xác định hạng văn phòng mục tiêu và chứng chỉ xanh nếu thị trường thuê đòi hỏi (LEED, EDGE, LOTUS).',hs:['Bảng mục tiêu chứng chỉ, danh mục tín chỉ'],laws:[],risk:'Chốt mục tiêu chứng chỉ muộn, phải sửa mặt dựng và MEP.',chu:'Chốt mục tiêu trước SD: chứng chỉ xanh ảnh hưởng mặt dựng, MEP và chi phí.'}]},
+ ks:{name:'Khách sạn',c:'var(--ks)',f:'F1.2',intro:'Khách sạn có hai tuyến song song: pháp lý nhà nước và vòng duyệt của operator. Tuyến operator ở mục Operator.',
+  notes:{s5:'Khách sạn thuộc nhóm nguy hiểm cháy F1.2 theo QCVN 06:2022/BXD. Nên xong vòng duyệt concept và SD của operator trước khi nộp BCNCKT, nếu không sẽ phải điều chỉnh sau thẩm định.',s6:'Mock-up room là cổng duyệt quan trọng với operator trước khi đặt hàng FF&E số lượng lớn.'},
+  extra:[{after:'s1',name:'Hợp đồng với operator (HMA, TSA)',viec:'Ký hợp đồng quản lý vận hành và hợp đồng dịch vụ kỹ thuật; chốt phiên bản brand standard, danh sách tư vấn được chấp thuận, thời gian duyệt mỗi vòng.',hs:['HMA, TSA','Brand standard, design guideline','Facilities List, Space Allocation'],laws:[],risk:'Standard đổi giữa chừng; thời gian duyệt không ghi trong hợp đồng.',chu:'Không phải thủ tục nhà nước, nhưng quyết định tiến độ thiết kế. Xem mục Operator.'},
+   {after:'s9',name:'Xếp hạng sao và điều kiện kinh doanh lưu trú',viec:'Tự nguyện đăng ký xếp hạng 1–5 sao; hạng 4–5 sao do cơ quan du lịch trung ương công nhận, 1–3 sao do cấp tỉnh. Xin giấy chứng nhận đủ điều kiện an ninh, trật tự và các điều kiện kinh doanh lưu trú khác.',hs:['Hồ sơ đề nghị công nhận hạng','Giấy chứng nhận đủ điều kiện an ninh, trật tự'],laws:['dl','tcvn4391'],risk:'Thiết kế không đạt diện tích tối thiểu của hạng sao mục tiêu.',chu:'Dùng TCVN 4391:2015 làm checklist diện tích ngay từ concept. Luật Du lịch đang được sửa.'}]}
+};
+const FLOW=[['Khởi đầu','Đánh giá địa điểm, ký HMA và TSA'],['Chọn tư vấn','Operator góp ý hoặc chấp thuận tư vấn'],['Concept','Duyệt theo brand standard và design guidelines'],['Thiết kế, hồ sơ thầu','Duyệt SD, DD, hồ sơ mời thầu, life safety'],['Thi công','Kiểm tra công trường định kỳ'],['Trước khai trương','Kiểm tra pre-opening']];
+const FG=[['Khách sạn','F1.2','Chiều cao PCCC, khoang cháy tầng phòng. Ballroom, hội nghị có phục vụ ăn uống thuộc F3.2; không có ăn uống thuộc F2.1'],['Chung cư','F1.3','Số thang thoát nạn, tầng lánh nạn (nhà cao), hầm đỗ xe'],['Nhà ở riêng lẻ','F1.4','Lối thoát, ngăn cháy giữa các căn liền kề'],['Nhà hàng','F3.2','Số người, lối thoát, bếp và hút khói'],['Văn phòng','F4.3','Khoang cháy sàn lớn, giếng trời, sprinkler'],['Kho','F5.2','Hạng nguy hiểm cháy của hàng hóa, khoang cháy']];
+const EXT=[['Cẩm nang PPP','Quy trình đầu tư PPP và BT: 27 bước, cây quyết định 4 tuyến BT, tra nhanh văn bản theo NĐ 243/2025 và NĐ 377/2026. Dùng khi dự án theo hình thức đối tác công tư.','https://cam-nang-ppp.iddattran.chatgpt.site/'],['Tra cứu QCVN 06','Nhập nhóm F, chiều cao, số tầng, khoang cháy, số người để lọc yêu cầu PCCC theo QCVN 06:2022/BXD kèm Sửa đổi 1:2023. Của Võ Đỗ Hùng, chỉ để tham khảo.','https://hvdo42.github.io/qcvn06-tra-cuu/'],['Rủi ro khi dựa vào trang ngoài','Hai trang trên do cá nhân làm, có thể ngưng bất cứ lúc nào. Phần cốt lõi (nhóm F, bộ văn bản PCCC, vòng đời) đã chép vào sổ tay này để không phụ thuộc.','']];
+const TOOLS=[['DRM','Ma trận trách nhiệm thiết kế: hạng mục nào ai làm (R), ai duyệt (A), ai phối hợp (C), ai được báo (I), chỗ giao nhau cần chốt.'],['Lịch hồ sơ','Từng hồ sơ theo bộ môn và giai đoạn, hạn nộp, ngày nộp thật. Cột trễ tự tính.'],['Bảng quyết định','Vấn đề, phương án, đề xuất của DM, người quyết, hạn quyết. Cột cuối tự đếm ngày còn hoặc quá hạn.'],['Bảng rủi ro','Khả năng × tác động ra điểm và mức. Từ 15 điểm là mức cao, báo lãnh đạo ngay.'],['Báo cáo tuần','Một trang: đã xong, tuần tới, cần quyết, rủi ro. Bốn con số đầu trang tự lấy từ các bảng kia.'],['Mở bảng tính','Dữ liệu mẫu mã VD-, xoá trước khi dùng thật. Tải về được dạng .xlsx.','https://claude.ai/artifact/PkApujUrrjqHhyb9SXPDKT']];
+const TREE=[
+ {k:'type',q:'Sản phẩm chính của dự án?',o:Object.entries(TYPES).map(([k,v])=>[k,v.name])},
+ {k:'fund',q:'Nguồn vốn?',o:[['tn','Tư nhân, đầu tư kinh doanh'],['ppp','PPP hoặc BT'],['dtc','Đầu tư công']]},
+ {k:'plan',q:'Khu đất đã có quy hoạch chi tiết 1/500 được duyệt?',o:[['y','Có'],['n','Chưa'],['u','Không rõ']]},
+ {k:'sell',q:'Có bán nhà khi chưa xây xong (nhà hình thành trong tương lai)?',o:[['y','Có'],['n','Không']]},
+ {k:'op',q:'Có operator hoặc thương hiệu quản lý quốc tế?',o:[['y','Có'],['n','Không']]},
+ {k:'lvl',q:'Công trình cấp II trở lên, hoặc quy mô lớn ảnh hưởng an toàn cộng đồng?',o:[['y','Có'],['n','Không'],['u','Không rõ']]}
+];
+const SUGG=['Chung cư cần điều kiện gì để mở bán?','Luật Xây dựng 2025 thay đổi gì với thẩm định thiết kế?','Brand standard của IHG khác QCVN thì xử lý thế nào?','Lập checklist pháp lý cho khách sạn 5 sao ven biển'];
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let cur='ks',sel='s1';
+try{const h=location.hash.slice(1);if(TYPES[h])cur=h;else{const s=localStorage.getItem('dm-type');if(TYPES[s])cur=s}}catch(e){}
+let ticks={};try{ticks=JSON.parse(localStorage.getItem('dm-ticks')||'{}')}catch(e){ticks={}}
+const save=()=>{try{localStorage.setItem('dm-ticks',JSON.stringify(ticks));localStorage.setItem('dm-type',cur)}catch(e){}};
+
+function rows(t){
+ const T=TYPES[t];const out=[];let n=0;
+ STEPS.forEach(s=>{n++;out.push({...s,num:String(n),note:T.notes[s.id]||''});
+  T.extra.filter(x=>x.after===s.id).forEach((x,i)=>out.push({...x,id:s.id+'x'+i,num:n+String.fromCharCode(97+i),note:'',extra:true}));});
+ return out;
+}
+const total=Object.keys(TYPES).reduce((a,t)=>a+rows(t).length,0);
+$('#f-steps').textContent=rows(cur).length;$('#f-laws').textContent=Object.keys(LAW).length;
+
+function lawChips(keys){return keys.length?keys.map(k=>`<button type="button" class="lawchip" data-law="${k}">${esc(LAW[k].n)}</button>`).join(''):'<span class="note">Không có văn bản riêng</span>'}
+function renderList(){
+ const q=$('#q').value.trim().toLowerCase();const box=$('#slist');
+ if(q){
+  const hits=[];Object.keys(TYPES).forEach(t=>rows(t).forEach(r=>{const txt=[r.name,r.viec,r.chu,r.note,r.risk,(r.hs||[]).join(' '),(r.laws||[]).map(k=>LAW[k].n).join(' ')].join(' ').toLowerCase();if(txt.includes(q))hits.push(`<button type="button" data-t="${t}" data-id="${r.id}"><b>${esc(r.num)}</b><span>${esc(r.name)}<br><small class="note">${esc(TYPES[t].name)}</small></span></button>`)}));
+  box.innerHTML=hits.join('')||'<p class="note" style="padding:12px">Không thấy. Thử từ khác, hoặc hỏi Claude cuối trang.</p>';
+  $('#ck-title').textContent=hits.length+' kết quả';return;
+ }
+ $('#ck-title').textContent='Từng bước: '+TYPES[cur].name;
+ box.innerHTML=rows(cur).map(r=>`<button type="button" data-t="${cur}" data-id="${r.id}" class="${r.extra?'sub ':''}${ticks[cur+':'+r.id]?'done':''}" aria-current="${r.id===sel}"><b>${esc(r.num)}</b><span>${esc(r.name)}</span></button>`).join('');
+}
+function renderDetail(){
+ const list=rows(cur);let i=list.findIndex(r=>r.id===sel);if(i<0){i=0;sel=list[0].id}
+ const r=list[i];const k=cur+':'+r.id;const prev=list[i-1],next=list[i+1];
+ $('#detail').innerHTML=`<p class="note" style="margin:0">${esc(TYPES[cur].name)} · bước ${esc(r.num)}/${list.length}${r.extra?' · bước riêng của loại này':''}</p>
+ <h3>${esc(r.name)}</h3>
+ <div class="dgrid">
+  <section class="wide"><h4>Việc cần làm</h4><p>${esc(r.viec)}</p></section>
+  ${r.note?`<section class="wide warn"><h4>Riêng với ${esc(TYPES[cur].name.toLowerCase())}</h4><p>${esc(r.note)}</p></section>`:''}
+  <section><h4>Hồ sơ cần chuẩn bị</h4><ul>${(r.hs||[]).map(h=>`<li>${esc(h)}</li>`).join('')}</ul></section>
+  <section><h4>Căn cứ (bấm để xem trích yếu)</h4><div>${lawChips(r.laws||[])}</div></section>
+  <section><h4>Rủi ro</h4><p>${esc(r.risk)}</p></section>
+  <section><h4>DM cần để ý</h4><p>${esc(r.chu)}</p></section>
+  <section class="wide"><h4>Bước tiếp theo</h4><p>${next?esc(next.num+'. '+next.name):'Hết tuyến. Xem thư viện tình huống để ghi lại bài học của dự án.'}</p></section>
+ </div>
+ <div class="row" style="margin-top:16px;justify-content:space-between">
+  <label style="display:flex;gap:8px;align-items:center;margin:0;font-weight:500"><input type="checkbox" id="tick" ${ticks[k]?'checked':''} style="width:22px;height:22px;accent-color:var(--line)"> Đã xong bước này</label>
+  <div class="row"><button class="btn ghost" type="button" id="prev" ${prev?'':'disabled'}>Bước trước</button><button class="btn" type="button" id="next" ${next?'':'disabled'}>Bước sau</button></div>
+ </div>`;
+ $('#prev').onclick=()=>{if(prev){sel=prev.id;renderAll()}};
+ $('#next').onclick=()=>{if(next){sel=next.id;renderAll()}};
+ $('#tick').onchange=e=>{if(e.target.checked)ticks[k]=1;else delete ticks[k];save();renderList()};
+}
+function renderAll(){renderList();renderDetail();draw()}
+function openStep(t,id){$('#q').value='';if(t!==cur)setType(t,true);sel=id;renderAll();$('#buoc').scrollIntoView({behavior:'smooth'})}
+$('#slist').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if($('#q').value.trim()){openStep(b.dataset.t,b.dataset.id)}else{sel=b.dataset.id;renderAll();if(window.innerWidth<900)$('#detail').scrollIntoView({behavior:'smooth'})}});
+$('#q').addEventListener('input',renderList);
+$('#reset').addEventListener('click',()=>{Object.keys(ticks).filter(k=>k.startsWith(cur+':')).forEach(k=>delete ticks[k]);save();renderAll()});
+
+function renderChips(){$('#chips').innerHTML=Object.entries(TYPES).map(([k,v])=>`<button type="button" class="chip" id="${k}-chip" style="--c:${v.c}" aria-pressed="${k===cur}" data-t="${k}"><i></i>${esc(v.name)}</button>`).join('')}
+function setType(t,quiet){
+ cur=t;save();document.documentElement.style.setProperty('--line',TYPES[t].c);
+ document.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===t));
+ $('#type-intro').textContent=TYPES[t].intro;$('#f-steps').textContent=rows(t).length;
+ if(!rows(t).some(r=>r.id===sel))sel='s1';
+ const tr=document.querySelector(`#tree input[name=type][value=${t}]`);if(tr)tr.checked=true;
+ try{history.replaceState(null,'','#'+t)}catch(e){}
+ if(!quiet){renderAll();renderTree()}
+}
+$('#chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(b)setType(b.dataset.t)});
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(TYPES[h]&&h!==cur)setType(h)});
+
+const svg=$('#metro');
+function draw(){
+ const W=svg.clientWidth,H=svg.clientHeight;if(!W)return;
+ const T=TYPES[cur];const vert=W<560;let out='';
+ const pts=STEPS.map((st,i)=>({...st,i,extra:T.extra.filter(x=>x.after===st.id).length}));
+ if(!vert){
+  const m=48,y=H*0.5,step=(W-2*m)/(pts.length-1),fs=W<820?13:15;
+  out+=`<line x1="${m}" y1="${y}" x2="${W-m}" y2="${y}" stroke="${T.c}" stroke-width="10" stroke-linecap="round"/>`;
+  pts.forEach(p=>{const x=m+p.i*step,up=p.i%2===0,ly=up?y-34:y+46,ey=up?y-54:y+64,on=sel===p.id||sel.startsWith(p.id+'x');
+   if(p.extra)out+=`<text x="${x}" y="${ey}" font-size="13" text-anchor="middle" fill="${T.c}" font-weight="600">+${p.extra} riêng</text>`;
+   out+=`<g class="st" tabindex="0" role="button" aria-label="Bước ${p.i+1}: ${esc(p.name)}" data-id="${p.id}"><circle cx="${x}" cy="${y}" r="${on?16:13}" fill="${on?T.c:'var(--bg)'}" stroke="var(--ink)" stroke-width="5"/><text x="${x}" y="${y+5}" font-size="13" font-weight="800" text-anchor="middle" fill="${on?'var(--bg)':'var(--ink)'}" style="stroke-width:0">${p.i+1}</text><text x="${x}" y="${ly}" font-size="${fs}" font-weight="${on?800:600}" text-anchor="middle" fill="var(--ink)">${esc(p.st)}</text></g>`;});
+ }else{
+  const m=22,x=26,step=(H-2*m)/(pts.length-1);
+  out+=`<line x1="${x}" y1="${m}" x2="${x}" y2="${H-m}" stroke="${T.c}" stroke-width="8" stroke-linecap="round"/>`;
+  pts.forEach(p=>{const y=m+p.i*step,on=sel===p.id||sel.startsWith(p.id+'x');
+   out+=`<g class="st" tabindex="0" role="button" aria-label="Bước ${p.i+1}: ${esc(p.name)}" data-id="${p.id}"><circle cx="${x}" cy="${y}" r="11" fill="${on?T.c:'var(--bg)'}" stroke="var(--ink)" stroke-width="4"/><text x="${x+22}" y="${y+5}" font-size="15" font-weight="${on?800:600}" fill="var(--ink)">${p.i+1}. ${esc(p.st)}${p.extra?' <tspan fill="var(--mute)" font-weight="400">(+'+p.extra+' riêng)</tspan>':''}</text></g>`;});
+ }
+ svg.innerHTML=out;
+}
+const fitFig=()=>{$('#fig').style.height=($('#fig').clientWidth<560?420:240)+'px'};
+const ro=new ResizeObserver(()=>{fitFig();draw()});ro.observe($('#fig'));
+svg.addEventListener('click',e=>{const g=e.target.closest('.st');if(g)openStep(cur,g.dataset.id)});
+svg.addEventListener('keydown',e=>{const g=e.target.closest('.st');if(g&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openStep(cur,g.dataset.id)}});
+
+$('#tree').innerHTML=TREE.map(t=>`<div class="q"><fieldset><legend>${esc(t.q)}</legend><div class="opts">${t.o.map(([v,l])=>`<label><input type="radio" name="${t.k}" value="${v}" ${t.k==='type'&&v===cur?'checked':''}>${esc(l)}</label>`).join('')}</div></fieldset></div>`).join('');
+function renderTree(){
+ const v={};TREE.forEach(t=>{const c=document.querySelector(`#tree input[name=${t.k}]:checked`);v[t.k]=c?c.value:''});
+ const go=(id,txt)=>`<button type="button" data-go="${id}">${esc(txt)}</button>`;const out=[];const T=TYPES[cur];
+ if(v.fund==='ppp')out.push('Dự án PPP/BT đi theo Luật PPP và các nghị định riêng, khác tuyến trong sổ tay này. Xem Cẩm nang PPP ở mục Công cụ.');
+ if(v.fund==='dtc')out.push('Đầu tư công đi theo Luật Đầu tư công: chủ trương, thẩm định khác dự án kinh doanh. Sổ tay chỉ dùng được phần thiết kế, PCCC, nghiệm thu.');
+ out.push('Tuyến chính: '+T.name+', '+rows(cur).length+' bước. Nhóm nguy hiểm cháy: '+T.f+'. '+go('s1','Mở bước 1'));
+ if(v.plan==='n')out.push('Chưa có 1/500: lập quy hoạch chi tiết, hoặc quy hoạch tổng mặt bằng nếu lô đủ điều kiện rút gọn. '+go('s2','Mở bước quy hoạch'));
+ if(v.plan==='u')out.push('Kiểm tra ngay tình trạng 1/500 với phòng pháp lý: đây là đầu vào của mọi việc thiết kế. '+go('s2','Mở bước quy hoạch'));
+ if(v.plan==='y')out.push('Đã có 1/500: đọc kỹ chỉ tiêu và quy định quản lý trước khi giao nhiệm vụ cho tư vấn. Thiết kế lệch chỉ tiêu thì phải điều chỉnh quy hoạch.');
+ if(v.sell==='y'){const x=rows(cur).find(r=>/hình thành trong tương lai/.test(r.name));out.push('Có bán nhà hình thành trong tương lai: mốc nghiệm thu móng là mốc dòng tiền, đặt cọc tối đa 5%, cần bảo lãnh ngân hàng. '+(x?go(x.id,'Mở bước điều kiện bán'):'Loại dự án này chưa có bước riêng, xem Luật KDBĐS Điều 24, 26.'))}
+ if(v.op==='y'){const x=rows(cur).find(r=>/operator/.test(r.name));out.push('Có operator: thêm tuyến duyệt song song ở mọi cổng thiết kế. Chốt TSA và phiên bản brand standard trước concept. '+(x?go(x.id,'Mở bước hợp đồng operator'):'Xem mục Operator.'))}
+ if(v.lvl==='y')out.push('Cấp II trở lên: áp dụng BIM từ giai đoạn BCNCKT; công trình lớn phải thẩm tra thiết kế. '+go('s5','Mở bước BCNCKT'));
+ if(v.lvl==='u')out.push('Xác định cấp công trình sớm: nó quyết định BIM, thẩm tra và thẩm quyền thẩm định. '+go('s5','Mở bước BCNCKT'));
+ out.push('Miễn GPXD nếu công trình thuộc dự án đã được cơ quan chuyên môn thẩm định BCNCKT, nhưng vẫn phải thông báo khởi công. '+go('s7','Mở bước khởi công'));
+ $('#tree-out').innerHTML=out.map(x=>`<li>${x}</li>`).join('');
+}
+$('#tree').addEventListener('change',e=>{if(e.target.name==='type')setType(e.target.value);else renderTree()});
+$('#tree-out').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)openStep(cur,b.dataset.go)});
+
+function renderLaws(){
+ const q=$('#lq').value.trim().toLowerCase();
+ $('#laws tbody').innerHTML=Object.entries(LAW).filter(([k,l])=>!q||(l.n+' '+l.sum).toLowerCase().includes(q)).map(([k,l])=>`<tr><td data-l="Văn bản"><div><b>${esc(l.n)}</b>${l.u?`<br><a href="${esc(l.u)}" class="note">Mở văn bản</a>`:''}</div></td><td data-l="Hiệu lực"><div style="white-space:nowrap">${esc(l.e)}</div></td><td data-l="Trích yếu"><div>${esc(l.sum)}</div></td><td data-l="Tình trạng"><div><span class="tag ${l.s}">${l.s==='chg'?'Đang sửa đổi':l.s==='std'?'Quy chuẩn, tiêu chuẩn':'Đang hiệu lực'}</span></div></td></tr>`).join('')||'<tr><td colspan="4">Không thấy văn bản.</td></tr>';
+}
+$('#lq').addEventListener('input',renderLaws);
+const dlg=$('#lawdlg');let lastFocus=null;
+function openLaw(k){const l=LAW[k];if(!l)return;lastFocus=document.activeElement;$('#ld-t').textContent=l.n;$('#ld-eff').textContent='Hiệu lực: '+l.e;$('#ld-sum').textContent=l.sum;$('#ld-st').textContent=l.s==='chg'?'Đang sửa đổi: kiểm tra lại trước khi dùng.':'';const a=$('#ld-link');if(l.u){a.href=l.u;a.hidden=false}else{a.hidden=true}dlg.classList.add('open');$('#ld-close').focus()}
+function closeLaw(){dlg.classList.remove('open');if(lastFocus)lastFocus.focus()}
+document.addEventListener('click',e=>{const c=e.target.closest('.lawchip');if(c)openLaw(c.dataset.law)});
+$('#ld-close').addEventListener('click',closeLaw);
+dlg.addEventListener('click',e=>{if(e.target===dlg)closeLaw()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dlg.classList.contains('open'))closeLaw()});
+
+$('#fgroups tbody').innerHTML=FG.map(f=>`<tr><td data-l="Loại"><div>${esc(f[0])}</div></td><td data-l="Nhóm"><div><b>${esc(f[1])}</b></div></td><td data-l="Chốt sớm"><div>${esc(f[2])}</div></td></tr>`).join('');
+$('#flow').innerHTML=FLOW.map(f=>`<div><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div>`).join('');
+$('#ext').innerHTML=EXT.map(x=>`<div class="panel ext"><b style="font-size:17px">${esc(x[0])}</b><p style="font-size:15px;margin:0">${esc(x[1])}</p>${x[2]?`<a class="btn" href="${esc(x[2])}">Mở trang</a>`:''}</div>`).join('');
+$('#tools').innerHTML=TOOLS.map(t=>`<div class="panel tool"><b>${esc(t[0])}</b><p>${esc(t[1])}</p>${t[2]?`<a class="btn" style="margin-top:10px" href="${esc(t[2])}">Mở DM Toolkit</a>`:''}</div>`).join('');
+
+renderChips();setType(cur,true);renderLaws();renderAll();renderTree();
+}
+</script>
+</body>
+</html>
