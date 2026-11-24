@@ -126,6 +126,18 @@ ul{margin:0 0 12px;padding-left:20px}li{margin-bottom:6px}
 #lawdlg{position:fixed;inset:0;z-index:20;background:color-mix(in srgb,#000 45%,transparent);display:none;align-items:center;justify-content:center;padding:16px}
 #lawdlg.open{display:flex}
 #lawdlg .box{background:var(--bg);color:var(--ink);border-radius:12px;max-width:560px;width:100%;padding:20px;border-top:6px solid var(--line);max-height:85vh;overflow-y:auto}
+.calc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start}
+.calc .panel{display:grid;gap:12px}
+.calc .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.calc input[type=number]{font:16px 'Be Vietnam Pro',sans-serif;color:var(--ink);background:var(--bg);border:1.5px solid var(--rule);border-radius:8px;padding:8px 10px;min-height:44px;width:100%}
+.calc input[type=number]:focus{outline:none;border-color:var(--line)}
+.mix td{padding:4px}
+.mix td input{min-height:40px}
+.big{font-size:clamp(32px,4vw,44px);font-weight:800;line-height:1.05;letter-spacing:-.02em}
+.res{border-top:2px solid var(--ink);padding-top:10px}
+.res .row{justify-content:space-between}
+.flag{color:var(--cc);font-size:14px}
+@media(max-width:900px){.calc{grid-template-columns:minmax(0,1fr)}}
 footer{border-top:1px solid var(--rule)}
 @media(max-width:900px){.top,.intro,#chat,.tree,.cases{grid-template-columns:minmax(0,1fr)}.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}.flow{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:24px}.steps{grid-template-columns:minmax(0,1fr)}#slist{max-height:320px}#detail{position:static}}
 @media(max-width:600px){.grid2,.grid3,.dgrid,.cform .two{grid-template-columns:minmax(0,1fr)}.flow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.facts b{font-size:22px}table{font-size:14px}th,td{padding:6px 4px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--rule)}.stack td{display:flex;gap:12px;border:0;padding:3px 0}.stack td::before{content:attr(data-l);color:var(--mute);font-size:13px;flex:none;width:6.5em}}
@@ -136,7 +148,7 @@ footer{border-top:1px solid var(--rule)}
 
 <span id="f-steps" hidden></span><span id="f-laws" hidden></span>
 <nav aria-label="Mục lục"><div class="wrap">
-  <a href="#vong-doi">Vòng đời</a><a href="#quyet-dinh">Cây quyết định</a><a href="#buoc">Từng bước</a><a href="#van-ban">Văn bản</a><a href="#pccc">PCCC</a><a href="#operator">Operator</a><a href="#cong-cu">Công cụ</a>
+  <a href="#vong-doi">Vòng đời</a><a href="#quyet-dinh">Cây quyết định</a><a href="#buoc">Từng bước</a><a href="#tinh-nhanh">Tính nhanh</a><a href="#van-ban">Văn bản</a><a href="#pccc">PCCC</a><a href="#operator">Operator</a><a href="#cong-cu">Công cụ</a>
 </div></nav>
 
 <section class="band" id="vong-doi"><div class="wrap">
@@ -165,6 +177,40 @@ footer{border-top:1px solid var(--rule)}
     <article id="detail" class="panel" aria-live="polite"></article>
   </div>
   <p class="note" style="margin-top:10px">Danh mục hồ sơ là để tham khảo: đối chiếu thành phần hồ sơ theo mẫu của nghị định và cơ quan tiếp nhận. Đánh dấu "đã xong" chỉ lưu trên trình duyệt này.</p>
+</div></section>
+
+<section class="band alt" id="tinh-nhanh"><div class="wrap">
+  <h2>Tính nhanh: dân số và chỗ đỗ xe</h2>
+  <p>Công cụ ước tính sơ bộ để kiểm tra phương án. Chỉ tiêu lấy từ văn bản ghi bên dưới mỗi ô; quy định địa phương có thể khác, cần đối chiếu bản gốc trước khi đưa vào hồ sơ.</p>
+  <div class="calc">
+    <div class="panel">
+      <h3>Dân số nhà chung cư</h3>
+      <div class="two">
+        <div><label for="p-rule">Quy định áp dụng</label><select id="p-rule"><option value="hcm">TP.HCM – QĐ 32/2025/QĐ-UBND</option><option value="hn">Hà Nội – QĐ 34/2024/QĐ-UBND</option></select></div>
+        <div><label for="p-kind">Loại nhà ở</label><select id="p-kind"><option value="tm">Nhà ở thương mại</option><option value="xh">Nhà ở xã hội, tái định cư</option></select></div>
+      </div>
+      <div class="scroll"><table class="mix" id="mix"><thead><tr><th>Phòng ngủ</th><th>DT sử dụng (m²)</th><th>Số căn</th><th>Người/căn</th><th></th></tr></thead><tbody></tbody></table></div>
+      <div class="row"><button class="btn ghost" type="button" id="mix-add">Thêm loại căn</button><button class="btn ghost" type="button" id="mix-reset">Về dữ liệu mẫu</button></div>
+      <div class="res">
+        <div class="row"><span>Theo cơ cấu căn hộ</span><span class="big" id="p-total">0</span></div>
+        <div class="row note"><span id="p-units">0 căn</span><span id="p-default"></span></div>
+        <p class="flag" id="p-flag" hidden></p>
+      </div>
+      <p class="src" id="p-src"></p>
+    </div>
+    <div class="panel">
+      <h3>Chỗ đỗ xe</h3>
+      <div><label for="k-type">Loại công trình</label><select id="k-type"><option value="cc">Nhà chung cư (phần căn hộ)</option><option value="ks">Khách sạn</option><option value="vp">Văn phòng, thương mại, hội nghị</option></select></div>
+      <div id="k-in" class="two"></div>
+      <div class="res">
+        <div class="row"><span id="k-label">Kết quả</span><span class="big" id="k-main">0</span></div>
+        <div id="k-detail" class="note"></div>
+      </div>
+      <div><label for="k-lv">Quy đổi diện tích đất bãi đỗ theo số tầng bãi</label><select id="k-lv"><option value="25">Bãi trên mặt đất: 25 m²/chỗ</option><option value="30">Nhiều tầng hoặc ngầm, 1 tầng: 30 m²/chỗ</option><option value="20">2 tầng: 20 m²/chỗ</option><option value="14">3 tầng: 14 m²/chỗ</option><option value="12">4 tầng: 12 m²/chỗ</option><option value="10">5 tầng: 10 m²/chỗ</option></select></div>
+      <p class="src" id="k-src"></p>
+    </div>
+  </div>
+  <p class="note" style="margin-top:14px">QCVN 01:2021/BXD áp dụng đến hết 31/12/2026. Từ 01/01/2027, QCVN 01:2026/BXD (Thông tư 46/2026/TT-BXD) thay thế; chỉ tiêu đỗ xe theo quy chuẩn mới sẽ được cập nhật khi đối chiếu được toàn văn. Sửa đổi 01:2026 QCVN 04:2021/BXD (Thông tư 31/2026/TT-BXD, hiệu lực 15/12/2026) bổ sung yêu cầu chỗ để xe điện và khu vực đổi pin cho nhà chung cư.</p>
 </div></section>
 
 <section class="band alt" id="van-ban"><div class="wrap">
@@ -267,7 +313,7 @@ const LAW={
  qh:{n:'Luật Quy hoạch đô thị và nông thôn 47/2024/QH15',e:'01/07/2025',s:'on',sum:'Hệ thống quy hoạch chung, phân khu, chi tiết; trình tự lập, thẩm định, phê duyệt, điều chỉnh. Thay cho Luật Quy hoạch đô thị 2009 và phần quy hoạch xây dựng của Luật Xây dựng.',u:''},
  nd178:{n:'NĐ 178/2025/NĐ-CP, sửa bởi NĐ 34/2026/NĐ-CP',e:'01/07/2025',s:'on',sum:'Chi tiết Luật Quy hoạch đô thị và nông thôn: trường hợp lập quy hoạch chi tiết, quy trình rút gọn "quy hoạch tổng mặt bằng" (không lập nhiệm vụ), thời gian lập, chi phí. Bộ Xây dựng đã có văn bản hợp nhất 18/VBHN-BXD (03/2026).',u:'https://moc.gov.vn/Images/FileVanBan/BXD_18-VBHN-BXD_24032026.pdf'},
  tt16:{n:'TT 16/2025/TT-BXD, sửa bởi TT 43/2025 và TT 24/2026',e:'01/07/2025',s:'on',sum:'Chi tiết hồ sơ, nội dung nhiệm vụ và đồ án quy hoạch đô thị và nông thôn. Có văn bản hợp nhất 59/VBHN-BXD.',u:'https://datafiles.chinhphu.vn/cpp/files/vbpq/2026/7/59-vbhn-bxd.signed.pdf'},
- qc01:{n:'QCVN 01:2021/BXD',e:'—',s:'std',sum:'Quy chuẩn quốc gia về quy hoạch xây dựng: chỉ tiêu sử dụng đất, mật độ, khoảng lùi, giao thông, hạ tầng kỹ thuật, kể cả yêu cầu đường cho xe chữa cháy.',u:''},
+ qc01:{n:'QCVN 01:2021/BXD (thay bằng QCVN 01:2026/BXD từ 01/01/2027)',e:'—',s:'chg',sum:'Quy chuẩn quốc gia về quy hoạch xây dựng: chỉ tiêu sử dụng đất, mật độ, khoảng lùi, giao thông, hạ tầng kỹ thuật, kể cả yêu cầu đường cho xe chữa cháy; Bảng 2.19 số chỗ đỗ ô tô tối thiểu. QCVN 01:2026/BXD Quy hoạch đô thị và nông thôn ban hành kèm Thông tư 46/2026/TT-BXD ngày 30/6/2026, hiệu lực 01/01/2027, thay thế QCVN 01:2021/BXD.',u:'https://luatvietnam.vn/xay-dung/quy-chuan-ky-thuat-quoc-gia-qcvn-01-2021-bxd-quy-hoach-xay-dung-202714-d3.html'},
  dd:{n:'Luật Đất đai 31/2024/QH15',e:'01/08/2024',s:'on',sum:'Giao đất, cho thuê đất, chuyển mục đích, giá đất, thu hồi, bồi thường, hỗ trợ, tái định cư.',u:''},
  bvmt:{n:'Luật BVMT 72/2020/QH14, sửa bởi Luật 146/2025/QH15',e:'—',s:'chg',sum:'Đối tượng phải đánh giá tác động môi trường, cấp giấy phép môi trường, đăng ký môi trường. Theo Luật 146/2025, chủ dự án tự tổ chức thực hiện ĐTM từ 01/01/2026. Quốc hội đang thảo luận dự án luật sửa đổi tiếp tại kỳ họp tháng 10–11/2026.',u:'https://luatvietnam.vn/linh-vuc-khac/tong-hop-diem-moi-cua-luat-sua-doi-luat-bao-ve-moi-truong-883-106073-article.html'},
  xd:{n:'Luật Xây dựng 135/2025/QH15',e:'01/07/2026',s:'on',sum:'Báo cáo nghiên cứu khả thi gồm thuyết minh và thiết kế (Điều 24); thẩm định BCNCKT, cả giải pháp PCCC (Điều 26, 27); bỏ thẩm định thiết kế triển khai sau thiết kế cơ sở tại cơ quan chuyên môn; Điều 43 mở rộng miễn GPXD, trong đó có công trình thuộc dự án đã được cơ quan chuyên môn thẩm định BCNCKT và phê duyệt, nhưng phải gửi thông báo khởi công (Điều 44). Khoản 2, 3 Điều 43 và Điều 71 có hiệu lực từ 01/01/2026.',u:'https://thuviennhadat.vn/van-ban-phap-luat-viet-nam/luat-xay-dung-2025-so-135-2025-qh15-675213.html'},
@@ -278,16 +324,18 @@ const LAW={
  no:{n:'Luật Nhà ở 27/2023/QH15',e:'01/08/2024',s:'chg',sum:'Nhà ở thương mại, nhà ở xã hội, nhà chung cư. Khoản 2 Điều 83: dự án nhà ở thương mại, khu đô thị bố trí 20% quỹ đất NOXH, hoặc chuyển giao quỹ nhà, hoặc nộp tiền tương đương, do UBND cấp tỉnh quyết định. Có dự thảo Luật Nhà ở sửa đổi (07/2026).',u:'https://luatvietnam.vn/dat-dai/luat-nha-o-2023-so-27-2023-qh15-284800-d1.html'},
  nd100:{n:'NĐ 100/2024/NĐ-CP (sửa bởi NĐ 261/2025, 54/2026, 136/2026)',e:'01/08/2024',s:'on',sum:'Chi tiết Luật Nhà ở về phát triển và quản lý nhà ở xã hội, gồm cách thực hiện nghĩa vụ 20% quỹ đất.',u:''},
  kd:{n:'Luật Kinh doanh bất động sản 29/2023/QH15',e:'01/08/2024',s:'on',sum:'Điều 23: nguyên tắc kinh doanh nhà hình thành trong tương lai, đặt cọc tối đa 5% giá bán. Điều 24: điều kiện đưa vào kinh doanh (giấy tờ đất, nghiệm thu móng, văn bản đủ điều kiện bán). Điều 26: bảo lãnh. Điều 31: điều kiện phân lô bán nền.',u:'https://thuvienphapluat.vn/van-ban/Bat-dong-san/Luat-Kinh-doanh-bat-dong-san-29-2023-QH15-530116.aspx'},
- kt:{n:'Luật Kiến trúc 40/2019/QH14',e:'01/07/2020',s:'on',sum:'Quy chế quản lý kiến trúc của địa phương, yêu cầu kiến trúc với công trình, chứng chỉ hành nghề kiến trúc.',u:''},
+ kt:{n:'Luật Kiến trúc 40/2019/QH14',e:'01/07/2020',s:'chg',sum:'Quy chế quản lý kiến trúc của địa phương, yêu cầu kiến trúc với công trình, chứng chỉ hành nghề kiến trúc. Đã có Luật 19/2026/QH16 sửa đổi, bổ sung Luật Kiến trúc, hiệu lực 01/03/2027.',u:'https://datafiles.chinhphu.vn/cpp/files/vbpq/2026/10/157-vbhn-vpqh.signed.pdf'},
  dl:{n:'Luật Du lịch 09/2017/QH14',e:'01/01/2018',s:'chg',sum:'Cơ sở lưu trú du lịch; tự nguyện đăng ký xếp hạng 1–5 sao theo tiêu chuẩn quốc gia. Quốc hội thảo luận dự thảo Luật Du lịch sửa đổi tháng 11/2026.',u:'https://thuvienphapluat.vn/van-ban/Van-hoa-Xa-hoi/Luat-du-lich-2017-322936.aspx'},
  tcvn4391:{n:'TCVN 4391:2015 Khách sạn – Xếp hạng',e:'—',s:'std',sum:'Xếp hạng 1–5 sao theo vị trí, kiến trúc, trang thiết bị, dịch vụ, nhân sự, an ninh, môi trường. Dùng được làm checklist thiết kế: ví dụ sảnh đón tiếp tối thiểu 35 m² (3 sao), 60 m² (4 sao), 100 m² (5 sao) với khách sạn thông thường.',u:'https://thuvienphapluat.vn/TCVN/Linh-vuc-khac/TCVN-4391-2015-Khach-san-Xep-hang-915306.aspx'},
  qc06:{n:'QCVN 06:2022/BXD + Sửa đổi 1:2023',e:'—',s:'std',sum:'An toàn cháy cho nhà và công trình: nhóm nguy hiểm cháy theo công năng F1–F5, bậc chịu lửa, khoang cháy, thoát nạn, ngăn cháy lan, cấp nước chữa cháy.',u:'https://hvdo42.github.io/qcvn06-tra-cuu/'},
- qc04:{n:'QCVN 04:2021/BXD',e:'—',s:'std',sum:'Quy chuẩn quốc gia về nhà chung cư: diện tích căn hộ, chiều cao, không gian sinh hoạt cộng đồng, chỗ để xe, an toàn sử dụng.',u:''},
+ qc04:{n:'QCVN 04:2021/BXD + Sửa đổi 01:2026',e:'—',s:'std',sum:'Quy chuẩn quốc gia về nhà chung cư: diện tích căn hộ, chiều cao, không gian sinh hoạt cộng đồng, chỗ để xe, an toàn sử dụng. Chỗ để xe: tối thiểu 25 m² cho 4 căn hộ, không nhỏ hơn 20 m² cho 100 m² diện tích sử dụng căn hộ, trong đó tối thiểu 6 m² xe máy, xe đạp mỗi căn; nhà ở xã hội, tái định cư được lấy 60%. Sửa đổi 01:2026 (Thông tư 31/2026/TT-BXD, hiệu lực 15/12/2026) bổ sung yêu cầu chỗ để xe điện, khu vực đổi pin.',u:'https://datafiles.chinhphu.vn/cpp/files/vbpq/2026/9/95-vbhn-bxd.signed.pdf'},
+ hcm32:{n:'QĐ 32/2025/QĐ-UBND TP.HCM (dân số nhà chung cư)',e:'09/01/2026',s:'chg',sum:'Phương pháp xác định dân số nhà chung cư, nhà chung cư hỗn hợp tại TP.HCM: chỉ tiêu 3,5 người/căn hộ hoặc theo cơ cấu phòng ở và diện tích sử dụng căn hộ. HoREA đang kiến nghị sửa và TP đang lấy ý kiến phương án điều chỉnh (06/2026).',u:'https://thuviennhadat.vn/phap-ly-nha-dat/phuong-phap-xac-dinh-dan-so-doi-voi-nha-chung-cu-nha-chung-cu-hon-hop-tren-dia-ban-tp-hcm-729849.html'},
+ hn34:{n:'QĐ 34/2024/QĐ-UBND Hà Nội (dân số nhà chung cư)',e:'—',s:'on',sum:'Dân số nhà chung cư thương mại theo chỉ tiêu 3,6 người/căn hộ hoặc theo cơ cấu phòng ở và diện tích sử dụng; quy tắc riêng cho nhà ở xã hội; khách sạn, biệt thự nghỉ dưỡng không yêu cầu xác định dân số.',u:'https://vbpl.vn/FileData/TW/Lists/vbpq/Attachments/167625/VanBanGoc_34.2024.pdf'},
  qc10:{n:'QCVN 10:2025/BCA',e:'—',s:'std',sum:'Trang bị, bố trí phương tiện PCCC và cứu nạn, cứu hộ cho nhà và công trình.',u:''}
 };
 const STEPS=[
  {id:'s1',st:'Chủ trương',name:'Chấp thuận chủ trương đầu tư',viec:'Lập đề xuất dự án; được chấp thuận chủ trương đầu tư và nhà đầu tư (hoặc qua đấu giá, đấu thầu).',hs:['Văn bản đề nghị thực hiện dự án','Đề xuất dự án: mục tiêu, quy mô, vốn, tiến độ, nhu cầu sử dụng đất','Tài liệu năng lực tài chính của nhà đầu tư'],laws:['dt'],risk:'Quy mô, công năng ghi trong chủ trương lệch với ý tưởng thiết kế về sau, phải xin điều chỉnh chủ trương.',chu:'Mục tiêu, quy mô, tiến độ trong chủ trương là khung cứng. Cần rà soát kỹ trước khi giao nhiệm vụ cho tư vấn.'},
- {id:'s2',st:'Quy hoạch',name:'Quy hoạch chi tiết 1/500',viec:'Lập nhiệm vụ và đồ án quy hoạch chi tiết; lô đủ điều kiện thì lập quy hoạch tổng mặt bằng theo quy trình rút gọn, không lập nhiệm vụ.',hs:['Khảo sát địa hình, hiện trạng','Nhiệm vụ quy hoạch (nếu phải lập)','Thuyết minh, bản vẽ đồ án, dự thảo quy định quản lý','Ý kiến cộng đồng dân cư và cơ quan liên quan'],laws:['qh','nd178','tt16','qc01','pccc'],risk:'Chỉ tiêu quy hoạch không đủ cho bài toán kinh doanh; điều chỉnh 1/500 về sau mất nhiều tháng.',chu:'Chỉ tiêu mật độ, tầng cao, hệ số sử dụng đất, dân số quyết định quy mô sản phẩm. Đồ án phải có giải pháp PCCC: đường và bãi cho xe chữa cháy, nguồn nước, trụ nước.'},
+ {id:'s2',st:'Quy hoạch',name:'Quy hoạch chi tiết 1/500',viec:'Lập nhiệm vụ và đồ án quy hoạch chi tiết; lô đủ điều kiện thì lập quy hoạch tổng mặt bằng theo quy trình rút gọn, không lập nhiệm vụ.',hs:['Khảo sát địa hình, hiện trạng','Nhiệm vụ quy hoạch (nếu phải lập)','Thuyết minh, bản vẽ đồ án, dự thảo quy định quản lý','Ý kiến cộng đồng dân cư và cơ quan liên quan'],laws:['qh','nd178','tt16','qc01','pccc','hcm32'],risk:'Chỉ tiêu quy hoạch không đủ cho bài toán kinh doanh; điều chỉnh 1/500 về sau mất nhiều tháng.',chu:'Chỉ tiêu mật độ, tầng cao, hệ số sử dụng đất, dân số quyết định quy mô sản phẩm. Đồ án phải có giải pháp PCCC: đường và bãi cho xe chữa cháy, nguồn nước, trụ nước.'},
  {id:'s3',st:'Đất đai',name:'Giao, thuê đất và giải phóng mặt bằng',viec:'Giao đất, cho thuê đất hoặc chuyển mục đích; xác định giá đất, nộp tiền; bồi thường, giải phóng mặt bằng.',hs:['Hồ sơ đo đạc, trích lục bản đồ địa chính','Phương án bồi thường, hỗ trợ, tái định cư','Quyết định giao đất hoặc cho thuê đất'],laws:['dd'],risk:'Đền bù kéo dài; ranh giới thực tế khác hồ sơ quy hoạch.',chu:'Ranh, mốc giới và hiện trạng phải khớp khảo sát. Tiến độ đền bù thường là đường găng thật của dự án.'},
  {id:'s4',st:'Môi trường',name:'Đánh giá tác động môi trường',viec:'ĐTM, giấy phép môi trường hoặc đăng ký môi trường, tùy loại và quy mô dự án.',hs:['Báo cáo ĐTM hoặc hồ sơ đề nghị cấp giấy phép môi trường','Tham vấn cộng đồng (nếu thuộc diện)'],laws:['bvmt'],risk:'Luật đang sửa đổi: đối tượng phải làm ĐTM có thể thay đổi trong lúc dự án đang chạy.',chu:'Kiểm tra lại đối tượng phải làm ĐTM trước khi lập hồ sơ. Giải pháp xử lý nước thải ảnh hưởng mặt bằng hạ tầng.'},
  {id:'s5',st:'BCNCKT',name:'Báo cáo nghiên cứu khả thi và thẩm định',viec:'Khảo sát; lập BCNCKT gồm thuyết minh và thiết kế (cơ sở, FEED hoặc kỹ thuật); trình cơ quan chuyên môn về xây dựng thẩm định; phê duyệt dự án.',hs:['Tờ trình thẩm định','BCNCKT: thuyết minh và thiết kế','Báo cáo khảo sát địa chất, địa hình','Hồ sơ giải pháp PCCC','Báo cáo thẩm tra (công trình phải thẩm tra)','Mô hình BIM (công trình mới từ cấp II)'],laws:['xd','nd217','pccc','nd105','qc06'],risk:'Bị yêu cầu bổ sung PCCC; thiết kế chưa qua vòng duyệt nội bộ hoặc của operator mà đã nộp, phải sửa sau thẩm định.',chu:'Đây là cổng pháp lý thiết kế lớn nhất: thẩm định gồm cả PCCC. Công trình mới từ cấp II trở lên phải áp dụng BIM từ giai đoạn này. Công trình lớn, ảnh hưởng an toàn cộng đồng phải thẩm tra thiết kế.'},
@@ -462,6 +510,65 @@ $('#fgroups tbody').innerHTML=FG.map(f=>`<tr><td data-l="Loại"><div>${esc(f[0]
 $('#flow').innerHTML=FLOW.map(f=>`<div><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div>`).join('');
 $('#ext').innerHTML=EXT.map(x=>`<div class="panel ext"><b style="font-size:17px">${esc(x[0])}</b><p style="font-size:15px;margin:0">${esc(x[1])}</p>${x[2]?`<a class="btn" href="${esc(x[2])}">Mở trang</a>`:''}</div>`).join('');
 $('#tools').innerHTML=TOOLS.map(t=>`<div class="panel tool"><b>${esc(t[0])}</b><p>${esc(t[1])}</p>${t[2]?`<a class="btn" style="margin-top:10px" href="${esc(t[2])}">Mở DM Toolkit</a>`:''}</div>`).join('');
+
+/* quick calculators */
+const RULES={
+ hcm:{tm:{def:3.5,src:'TP.HCM, QĐ 32/2025/QĐ-UBND (hiệu lực 09/01/2026): mặc định 3,5 người/căn ở giai đoạn thẩm định BCNCKT, GPXD; hoặc tính theo cơ cấu căn hộ. Bảng ngưỡng lấy theo bản tóm tắt của thuviennhadat.vn, cần đối chiếu bản gốc.',f:(b,a)=>{if(b>=4||a>160)return 6;if(b===3)return a>96&&a<=128?4:a>128&&a<=160?5:null;if(b===2)return a>56&&a<=64?2:a>64&&a<=96?3:null;if(b===1)return a>=25&&a<=32?1:a>32&&a<=56?2:null;return null}},
+      xh:{def:3.5,src:'TP.HCM, QĐ 32/2025/QĐ-UBND: căn hộ nhà ở xã hội, tái định cư. Bảng ngưỡng theo bản tóm tắt, cần đối chiếu bản gốc.',f:(b,a)=>{if(b===1)return a>=25&&a<=32?1:a>32&&a<45?1.5:null;if(b===2)return a>=45&&a<55?2:a>=55&&a<70?2.5:a>=70&&a<75?3:null;return null}}},
+ hn:{tm:{def:3.6,src:'Hà Nội, QĐ 34/2024/QĐ-UBND Điều 4 khoản 1: mặc định 3,6 người/căn hoặc theo cơ cấu phòng ở và diện tích sử dụng.',f:(b,a)=>{if(b===1)return a>=25&&a<=45?1:null;if(b===2)return a>45&&a<=70?2:a>70&&a<=100?3:null;if(b>=3)return a>100&&a<125?4:a>=125?5:null;return null}},
+     xh:{def:null,src:'Hà Nội, QĐ 34/2024/QĐ-UBND Điều 4 khoản 2: nhà ở xã hội.',f:(b,a)=>{if(b===1)return a>=25&&a<=40?1:null;if(b===2||b===3)return a>40&&a<=55?2:a>55&&a<=70?3:a>70&&a<=77?4:null;return null}}}
+};
+const MIX0=[[1,30,80],[2,62,160],[2,75,120],[3,105,40]];
+let mix=MIX0.map(r=>r.slice());
+const nf=(x,d)=>Number(x).toLocaleString('vi-VN',{maximumFractionDigits:d==null?1:d});
+function calcPop(){
+ const R=RULES[$('#p-rule').value][$('#p-kind').value];let tot=0,units=0,bad=0;
+ mix.forEach((r,i)=>{const b=+r[0],a=+r[1],n=+r[2]||0;units+=n;const p=R.f(b,a);const cell=document.getElementById('pp'+i);if(p==null){bad+=n;if(cell)cell.textContent='ngoài bảng'}else{tot+=p*n;if(cell)cell.textContent=nf(p)}});
+ $('#p-total').textContent=nf(tot)+' người';$('#p-units').textContent=nf(units,0)+' căn';
+ $('#p-default').textContent=R.def?('Chỉ tiêu mặc định '+nf(R.def)+' người/căn: '+nf(R.def*units)+' người'):'';
+ const fl=$('#p-flag');if(bad){fl.hidden=false;fl.textContent=nf(bad,0)+' căn có số phòng ngủ và diện tích không khớp bảng ngưỡng, chưa được tính. Theo quy định, trường hợp này tính theo chỉ tiêu diện tích sử dụng; kiểm tra bản gốc.'}else fl.hidden=true;
+ $('#p-src').textContent=R.src;
+}
+function renderMix(){
+ $('#mix tbody').innerHTML=mix.map((r,i)=>`<tr><td data-l="Phòng ngủ"><input type="number" min="1" max="6" step="1" value="${r[0]}" data-i="${i}" data-c="0" aria-label="Số phòng ngủ"></td><td data-l="Diện tích"><input type="number" min="20" step="0.5" value="${r[1]}" data-i="${i}" data-c="1" aria-label="Diện tích sử dụng"></td><td data-l="Số căn"><input type="number" min="0" step="1" value="${r[2]}" data-i="${i}" data-c="2" aria-label="Số căn"></td><td data-l="Người/căn" id="pp${i}" style="white-space:nowrap;font-weight:600"></td><td><button class="btn ghost" type="button" data-del="${i}" aria-label="Xoá dòng" style="min-height:40px;padding:0 12px">×</button></td></tr>`).join('');
+ calcPop();
+}
+$('#mix').addEventListener('input',e=>{const t=e.target;if(t.dataset.i==null)return;mix[+t.dataset.i][+t.dataset.c]=t.value;calcPop()});
+$('#mix').addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(b){mix.splice(+b.dataset.del,1);renderMix()}});
+$('#mix-add').addEventListener('click',()=>{mix.push([2,70,0]);renderMix()});
+$('#mix-reset').addEventListener('click',()=>{mix=MIX0.map(r=>r.slice());renderMix()});
+['#p-rule','#p-kind'].forEach(id=>$(id).addEventListener('change',calcPop));
+
+const KIN={
+ cc:[['k-n','Số căn hộ',600],['k-a','Tổng DT sử dụng căn hộ (m²)',42000],['k-x','Loại',null]],
+ ks:[['k-r','Số phòng',250],['k-s','Hạng',null]],
+ vp:[['k-f','Diện tích sàn sử dụng (m²)',20000],['k-g','Loại',null]]
+};
+function renderK(){
+ const t=$('#k-type').value;
+ $('#k-in').innerHTML=KIN[t].map(([id,l,v])=>{
+  if(id==='k-x')return `<div><label for="k-x">${l}</label><select id="k-x"><option value="1">Nhà ở thương mại</option><option value="0.6">Nhà ở xã hội, tái định cư, thu nhập thấp</option></select></div>`;
+  if(id==='k-s')return `<div><label for="k-s">${l}</label><select id="k-s"><option value="1">Từ 3 sao trở lên</option><option value="0.5">Dưới 3 sao</option></select></div>`;
+  if(id==='k-g')return `<div><label for="k-g">${l}</label><select id="k-g"><option value="1">Văn phòng cao cấp, TTTM, hội nghị, triển lãm</option><option value="0.5">Văn phòng, dịch vụ thông thường</option></select></div>`;
+  return `<div><label for="${id}">${l}</label><input type="number" id="${id}" min="0" value="${v}"></div>`}).join('');
+ calcK();
+}
+function calcK(){
+ const t=$('#k-type').value,lv=+$('#k-lv').value;const v=id=>+(document.getElementById(id)||{}).value||0;let main='',det='',src='';
+ if(t==='cc'){const n=v('k-n'),a=v('k-a'),f=+$('#k-x').value;const A=Math.max(25*n/4,0.2*a)*f;const moto=6*n;
+  main=nf(Math.ceil(A),0)+' m²';$('#k-label').textContent='Diện tích chỗ để xe tối thiểu';
+  det=`Lớn hơn của 25 m²/4 căn (${nf(25*n/4,0)} m²) và 20 m²/100 m² sử dụng (${nf(0.2*a,0)} m²)${f<1?', nhân 60%':''}. Trong đó xe máy, xe đạp tối thiểu ${nf(moto,0)} m² (6 m²/căn). Đã gồm đường nội bộ trong gara.`;
+  src='QCVN 04:2021/BXD mục 2.2.17. Gara cơ khí có cách tính riêng, chưa đưa vào.'}
+ if(t==='ks'){const r=v('k-r'),f=+$('#k-s').value;const c=Math.ceil(r/4*f);main=nf(c,0)+' chỗ ô tô';$('#k-label').textContent='Số chỗ đỗ ô tô tối thiểu';
+  det=`${nf(r,0)} phòng ÷ 4${f<1?' × 50%':''}. Diện tích đất quy đổi: ${nf(c*lv,0)} m² (${lv} m²/chỗ).`;src='QCVN 01:2021/BXD Bảng 2.19: khách sạn từ 3 sao 4 phòng/1 chỗ; dưới 3 sao tối thiểu 50%. Ưu tiên quy chuẩn riêng của loại công trình và yêu cầu của operator nếu cao hơn.'}
+ if(t==='vp'){const a=v('k-f'),f=+$('#k-g').value;const c=Math.ceil(a/100*f);main=nf(c,0)+' chỗ ô tô';$('#k-label').textContent='Số chỗ đỗ ô tô tối thiểu';
+  det=`${nf(a,0)} m² sàn sử dụng ÷ 100${f<1?' × 50%':''}. Diện tích đất quy đổi: ${nf(c*lv,0)} m² (${lv} m²/chỗ).`;src='QCVN 01:2021/BXD Bảng 2.19: văn phòng cao cấp, trụ sở cơ quan đối ngoại, hội nghị, triển lãm, TTTM 100 m² sàn sử dụng/1 chỗ; văn phòng, dịch vụ thông thường tối thiểu 50%.'}
+ if(t==='cc')det+=' Diện tích một chỗ theo QCVN 01:2021: ô tô 25 m², xe máy 3 m², xe đạp 0,9 m².';
+ $('#k-main').textContent=main;$('#k-detail').textContent=det;$('#k-src').textContent=src;
+}
+$('#k-type').addEventListener('change',renderK);$('#k-lv').addEventListener('change',calcK);
+$('#k-in').addEventListener('input',calcK);$('#k-in').addEventListener('change',calcK);
+renderMix();renderK();
 
 renderChips();setType(cur,true);renderLaws();renderAll();renderTree();
 }
