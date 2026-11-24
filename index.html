@@ -6,19 +6,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sổ tay Design Manager</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap" rel="stylesheet">
 <style>
 /* VOICE work: a reference a DM opens every week, dense and ordered
    IDEA a metro map of the project lifecycle: each project type is a line, each legal step a station
    PICTURE the lifecycle line, recoloured and re-stationed by the chosen project type
    COLOUR white / night #0e1116, ink, line colours green red amber blue + ink for hotels
-   TYPE Figtree 800 display + Figtree text
+   TYPE Be Vietnam Pro 800 display + Be Vietnam Pro text (full Vietnamese diacritics)
    LAYOUT title band, metro line, decision questions, step list beside step detail, then laws, PCCC, operator, cases, tools, ask; phone stacks */
 :root{color-scheme:light dark;--bg:light-dark(#ffffff,#0e1116);--ink:light-dark(#141414,#eef0f3);--mute:light-dark(#5b5f66,#9aa1ab);--rule:light-dark(#e2e3e5,#272c34);--panel:light-dark(#f4f5f6,#161b22);--qh:#00a05a;--cc:#e6261f;--tt:#e0a000;--vp:#0a5cff;--ks:light-dark(#141414,#eef0f3);--line:var(--ks)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 html{scroll-padding-top:64px}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Figtree,system-ui,sans-serif;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 'Be Vietnam Pro',system-ui,sans-serif;overflow-x:clip}
 a{color:inherit}
 .band{padding-block:clamp(24px,3.5vw,52px);padding-left:max(5vw,16px);padding-right:max(5vw,16px)}
 .alt{background:var(--panel)}
@@ -38,7 +38,7 @@ nav .wrap{display:flex;gap:2px;overflow-x:auto;padding:0 max(5vw,16px)}
 nav a{flex:none;text-decoration:none;padding:14px 10px;font-weight:600;font-size:15px;border-bottom:3px solid transparent}
 nav a:hover,nav a:focus-visible{border-bottom-color:var(--line);outline:none}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
-.chip{font:600 15px Figtree,sans-serif;min-height:44px;padding:0 16px;border-radius:22px;border:2px solid var(--c);background:transparent;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.chip{font:600 15px 'Be Vietnam Pro',sans-serif;min-height:44px;padding:0 16px;border-radius:22px;border:2px solid var(--c);background:transparent;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
 .chip i{width:12px;height:12px;border-radius:50%;background:var(--c)}
 .chip[aria-pressed=true]{background:var(--c);color:#fff}
 .chip[aria-pressed=true] i{background:#fff}
@@ -47,17 +47,17 @@ nav a:hover,nav a:focus-visible{border-bottom-color:var(--line);outline:none}
 .chip:focus-visible{outline:3px solid var(--c);outline-offset:2px}
 .fig{position:relative;height:240px;margin-top:8px}
 .fig>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-svg text{font-family:Figtree,sans-serif;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+svg text{font-family:'Be Vietnam Pro',sans-serif;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
 .st{cursor:pointer}
 .st:focus-visible circle{stroke-width:6}
 .intro{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:24px}
 .note{font-size:14px;color:var(--mute)}
 .panel{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:16px}
 .alt .panel{background:var(--bg)}
-input[type=search],input[type=text],select,textarea{font:16px Figtree,sans-serif;color:var(--ink);background:var(--bg);border:1.5px solid var(--rule);border-radius:8px;padding:10px 12px;min-height:44px;width:100%}
+input[type=search],input[type=text],select,textarea{font:16px 'Be Vietnam Pro',sans-serif;color:var(--ink);background:var(--bg);border:1.5px solid var(--rule);border-radius:8px;padding:10px 12px;min-height:44px;width:100%}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--line)}
 label{font-size:14px;font-weight:600;display:block;margin-bottom:4px}
-.btn{font:600 15px Figtree,sans-serif;min-height:44px;padding:0 18px;border-radius:8px;border:0;background:var(--ink);color:var(--bg);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.btn{font:600 15px 'Be Vietnam Pro',sans-serif;min-height:44px;padding:0 18px;border-radius:8px;border:0;background:var(--ink);color:var(--bg);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--rule)}
 .btn:disabled{opacity:.45;cursor:default}
 .btn:focus-visible{outline:3px solid var(--line);outline-offset:2px}
@@ -80,7 +80,7 @@ td{padding:12px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
 #tree-out button{font:inherit;background:none;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer}
 .steps{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:24px;align-items:start}
 #slist{display:flex;flex-direction:column;border-left:6px solid var(--line);max-height:720px;overflow-y:auto}
-#slist button{font:500 15px Figtree,sans-serif;text-align:left;background:none;border:0;border-bottom:1px solid var(--rule);padding:10px 12px;min-height:44px;color:var(--ink);cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+#slist button{font:500 15px 'Be Vietnam Pro',sans-serif;text-align:left;background:none;border:0;border-bottom:1px solid var(--rule);padding:10px 12px;min-height:44px;color:var(--ink);cursor:pointer;display:flex;gap:10px;align-items:flex-start}
 #slist button b{flex:none;min-width:2.2em;font-weight:800}
 #slist button[aria-current=true]{background:color-mix(in srgb,var(--line) 12%,transparent);font-weight:700}
 #slist button.done span{text-decoration:line-through;color:var(--mute)}
@@ -92,7 +92,7 @@ td{padding:12px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
 .dgrid section p,.dgrid ul{margin:0;font-size:15px}
 .dgrid .wide{grid-column:1/-1}
 .warn{padding:10px 12px;border-left:4px solid var(--line);background:color-mix(in srgb,var(--line) 8%,transparent);border-radius:0 8px 8px 0}
-.lawchip{font:600 13px Figtree,sans-serif;border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:14px;padding:4px 10px;margin:0 6px 6px 0;cursor:pointer;min-height:32px}
+.lawchip{font:600 13px 'Be Vietnam Pro',sans-serif;border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:14px;padding:4px 10px;margin:0 6px 6px 0;cursor:pointer;min-height:32px}
 .lawchip:hover,.lawchip:focus-visible{border-color:var(--line);outline:none}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
@@ -122,7 +122,7 @@ ul{margin:0 0 12px;padding-left:20px}li{margin-bottom:6px}
 .ask{display:flex;gap:8px;margin-top:12px}
 .ask textarea{min-height:48px;resize:vertical}
 .sugg{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.sugg button{font:14px Figtree,sans-serif;min-height:40px;padding:6px 12px;border-radius:8px;border:1px solid var(--rule);background:var(--bg);color:var(--ink);cursor:pointer;text-align:left}
+.sugg button{font:14px 'Be Vietnam Pro',sans-serif;min-height:40px;padding:6px 12px;border-radius:8px;border:1px solid var(--rule);background:var(--bg);color:var(--ink);cursor:pointer;text-align:left}
 #lawdlg{position:fixed;inset:0;z-index:20;background:color-mix(in srgb,#000 45%,transparent);display:none;align-items:center;justify-content:center;padding:16px}
 #lawdlg.open{display:flex}
 #lawdlg .box{background:var(--bg);color:var(--ink);border-radius:12px;max-width:560px;width:100%;padding:20px;border-top:6px solid var(--line);max-height:85vh;overflow-y:auto}
@@ -168,7 +168,7 @@ footer{border-top:1px solid var(--rule)}
 </div></section>
 
 <section class="band alt" id="van-ban"><div class="wrap">
-  <h2>Tra nhanh văn bản, rà soát ngày 24/11/2026</h2>
+  <h2>Tra nhanh văn bản</h2>
   <p>Ba thay đổi lớn năm 2026: Luật Xây dựng 2025 bỏ thẩm định thiết kế triển khai sau thiết kế cơ sở tại cơ quan nhà nước, mở rộng diện miễn giấy phép xây dựng, và Nghị định 217/2026 thay Nghị định 175/2024. Mục đỏ là luật đang sửa, xem lại trước khi dùng.</p>
   <div class="row" style="margin:12px 0"><input type="search" id="lq" placeholder="Tìm văn bản: quy hoạch, nhà ở, PCCC…" aria-label="Tìm văn bản" style="max-width:420px"></div>
   <div class="scroll"><table class="stack" id="laws"><thead><tr><th style="width:28%">Văn bản</th><th style="width:12%">Hiệu lực</th><th>Trích yếu</th><th style="width:16%">Tình trạng</th></tr></thead><tbody></tbody></table></div>
@@ -254,7 +254,7 @@ footer{border-top:1px solid var(--rule)}
 
 
 <footer class="band"><div class="wrap">
-  <p class="note">Bản dự phòng phục vụ tra cứu, cập nhật ngày 24/11/2026. Tài liệu chỉ mang tính tham khảo, không thay thế tư vấn pháp lý và không dùng làm căn cứ thẩm định. Luôn đối chiếu văn bản gốc, văn bản hợp nhất mới nhất và hướng dẫn của địa phương.</p>
+  <p class="note">Bản dự phòng phục vụ tra cứu. Tài liệu chỉ mang tính tham khảo, không thay thế tư vấn pháp lý và không dùng làm căn cứ thẩm định. Luôn đối chiếu văn bản gốc, văn bản hợp nhất mới nhất và hướng dẫn của địa phương.</p>
   <p class="src">Nguồn chính: thuvienphapluat.vn, luatvietnam.vn, hoatieu.vn, moc.gov.vn, datafiles.chinhphu.vn, vcci.com.vn, lsvn.vn, hatinh.gov.vn, development.ihg.com, careers.ihg.com, hklaw.com. Cách tổ chức tham khảo từ Cẩm nang PPP và công cụ tra QCVN 06 của Võ Đỗ Hùng.</p>
 </div></footer>
 
